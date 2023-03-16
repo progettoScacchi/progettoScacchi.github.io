@@ -1,0 +1,71 @@
+@keyframes giraScacchiera {
+	0%{transform: rotateX(0deg);}
+	100%{transform: rotateX(180deg);}
+}
+
+body {
+	background-image: url("immagini/tavolo-texture.jpg");
+}
+
+#bordoScacchiera {
+	background-image: url("immagini/wood-texture.jpg");
+	margin: auto;
+	margin-top: 100px;
+	width: 640px;
+	padding: 30px;
+	border-radius: 20px;
+	box-shadow: 0 0 25px 5px rgba(0,0,0, 0.8);
+}
+
+table{
+  margin: auto;
+  border-collapse: collapse;
+	animation-duration: 1s;
+	animation-iteration-count: 1;
+	animation-timing-function: linear;
+	border-radius: 20px;
+	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
+}
+
+td{
+  border-collapse: collapse;
+  width: 80px;
+  height: 80px;
+	min-width: 80px;
+	max-width: 80px;
+	min-height: 80px;
+	max-height: 80px;
+	margin: 0;
+	padding: 0;
+}
+
+.bianco{
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.nero{
+  background-color: rgba(150, 75, 0, 0.4);
+}
+
+img{
+  height: 80px;
+	width: 80px;
+	margin: 0;
+	padding: 0;
+}
+
+#topLeft {
+	border-radius: 20px 0 0 0;
+}
+
+#topRight{
+	border-radius: 0 20px 0 0;
+}
+
+#bottomLeft {
+	border-radius: 0 0 20px 0;
+}
+
+#bottomRight {
+	border-radius: 0 0 0 20px;
+}
