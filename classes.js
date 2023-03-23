@@ -76,19 +76,17 @@ class Scacchiera {
 			}
 		}
 
-		obj.calcolaMossePossibili(this.pezziBianco, this.pezziNero);
+		//obj.calcolaMossePossibili(this.pezziBianco, this.pezziNero);
 
 		//alert(x + "; " + y);
 	}
 
 	tick() {		//metodo che aggiorna la logica del gioco (fa i controlli e fa accadere cose)
-		
 		for (let i = 0; i < this.immagini.length; i++) {
 			this.immagini[i].addEventListener("click", function(e){
 				//super.seleziona(e);
 			});
 		}
-		
 	}
 }
 
