@@ -85,7 +85,7 @@ class Scacchiera {
 		
 		for (let i = 0; i < this.immagini.length; i++) {
 			this.immagini[i].addEventListener("click", function(e){
-				super.seleziona(e);
+				//super.seleziona(e);
 			});
 		}
 		

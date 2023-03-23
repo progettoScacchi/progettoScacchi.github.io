@@ -15,14 +15,13 @@ body {
 	padding: 30px;
 	border-radius: 20px;
 	box-shadow: 0 0 25px 5px rgba(0,0,0, 0.8);
+	/*transform: rotateX(45deg);*/
 }
 
 table{
   margin: auto;
   border-collapse: collapse;
-	animation-duration: 1s;
-	animation-iteration-count: 1;
-	animation-timing-function: linear;
+
 	border-radius: 20px;
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
