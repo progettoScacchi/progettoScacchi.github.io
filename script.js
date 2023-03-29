@@ -5,7 +5,7 @@ s.puntatore.addEventListener("click", loop)
 loop();	//attiva il gioco
 
 function loop() {
-	for (i in s.caselle) {
+	for (let i in s.caselle) {
 		s.caselle[i].innerHTML = "";
 	}
 

@@ -58,35 +58,19 @@ class Scacchiera {
 	}
 
 	seleziona(e) {
-		//parentNode accede al genitore dell'immagine	
-		alert(this.caselle.length);
+		//parentNode accede al genitore dell'immagine
 		
-		let x = Array.prototype.indexOf.call(this.caselle, e.target.parentNode) % 8;
-		let y = (Array.prototype.indexOf.call(this.caselle, e.target.parentNode) - x) / 8;
+		let x = Array.prototype.indexOf.call(this.caselle, e.parentNode) % 8;
+		let y = (Array.prototype.indexOf.call(this.caselle, e.parentNode) - x) / 8;
 		let obj;
 
-		if (e.target.src[49] === 'w') {
-			for (i in this.pezziBianco) {
-				if (this.pezziBianco[i].x === x && this.pezziBianco[i].y === y) obj = this.pezziBianco[i];
-			}
-		}
-		else {
-			for (i in this.pezziNero) {
-				if (this.pezziNero[i].x === x && this.pezziNero[i].y === y) obj = this.pezziNero[i];
-			}
-		}
 
-		//obj.calcolaMossePossibili(this.pezziBianco, this.pezziNero);
 
-		//alert(x + "; " + y);
+		alert(e.src);
 	}
 
-	tick() {		//metodo che aggiorna la logica del gioco (fa i controlli e fa accadere cose)
-		for (let i = 0; i < this.immagini.length; i++) {
-			this.immagini[i].addEventListener("click", function(e){
-				//super.seleziona(e);
-			});
-		}
+	tick() {		//metodo che aggiorna la logica del gioco (fa i controlli e fa accadere cose)for (let i = 0; i < this.immagini.length; i++) {
+		$("img").click(this.seleziona(this));
 	}
 }
 
