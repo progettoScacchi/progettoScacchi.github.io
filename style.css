@@ -38,6 +38,15 @@ td{
 	padding: 0;
 }
 
+tr {
+	border-collapse: collapse;
+	height: 80px;
+	max-width: 80px;
+	max-height: 80px;
+	margin: 0;
+	padding: 0;
+}
+
 .bianco{
   background-color: rgba(255, 255, 255, 0.7);
 }

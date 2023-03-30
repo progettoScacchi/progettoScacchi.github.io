@@ -57,20 +57,36 @@ class Scacchiera {
 		return this.pezziBianco.concat(this.pezziNero);
 	}
 
-	seleziona(e) {
-		//parentNode accede al genitore dell'immagine
-		
-		let x = Array.prototype.indexOf.call(this.caselle, e.parentNode) % 8;
-		let y = (Array.prototype.indexOf.call(this.caselle, e.parentNode) - x) / 8;
+	tick() {
+		//puntatore si riferisce sempre alla scacchiera
+		let puntatore = this;
 		let obj;
 
+		//quando si clicca sull'immagine succedono cose
+		$("img").click(function  () {
+
+			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle (puntatore.caselle) ed estrapolo le coordinate
+			let indiceVettore = Array.prototype.indexOf.call(puntatore.caselle, this.parentNode);
+			let x = indiceVettore % 8;
+			let y = (indiceVettore - x) / 8;
 
 
-		alert(e.src);
-	}
+			//prende il percorso assoluto dell'immagine, lo divide per le barre, prende l'ultima stringa (il nome dell'immagine) e controlla attraverso la prima lettera
+			//a quale colore appartiene l'immagine.
+			//poi cerca tra tutti gli oggetti quale ha le stesse coordinate dell'immagine
+			if (this.src.split("/")[this.src.split("/").length-1][0] === 'b') {
+				puntatore.pezziNero.forEach(function (value) {
+					if (value.x === x && value.y === y) obj = value;
+				});
+			}
+			else {
+				puntatore.pezziBianco.forEach(function (value) {
+					if (value.x === x && value.y === y) obj = value;
+				});
+			}
 
-	tick() {		//metodo che aggiorna la logica del gioco (fa i controlli e fa accadere cose)for (let i = 0; i < this.immagini.length; i++) {
-		$("img").click(this.seleziona(this));
+			puntatore.caselle[indiceVettore-8].style.backgroundColor = "red";
+		});
 	}
 }
 
