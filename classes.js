@@ -38,6 +38,7 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneBianco(i, 6));
 		}
+		this.spawn(new TorreNero(0, 5));
 
 		//pezzi neri
 		this.spawn(new TorreNero(0, 0));
@@ -59,33 +60,43 @@ class Scacchiera {
 
 	tick() {
 		//puntatore si riferisce sempre alla scacchiera
-		let puntatore = this;
+		let Scacchiera = this;
 		let obj;
 
 		//quando si clicca sull'immagine succedono cose
-		$("img").click(function  () {
+		$("img").one("click", function  () {
+			$("td").css("background-color", "");
 
 			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle (puntatore.caselle) ed estrapolo le coordinate
-			let indiceVettore = Array.prototype.indexOf.call(puntatore.caselle, this.parentNode);
+			let indiceVettore = Array.prototype.indexOf.call(Scacchiera.caselle, this.parentNode);
 			let x = indiceVettore % 8;
 			let y = (indiceVettore - x) / 8;
-
 
 			//prende il percorso assoluto dell'immagine, lo divide per le barre, prende l'ultima stringa (il nome dell'immagine) e controlla attraverso la prima lettera
 			//a quale colore appartiene l'immagine.
 			//poi cerca tra tutti gli oggetti quale ha le stesse coordinate dell'immagine
 			if (this.src.split("/")[this.src.split("/").length-1][0] === 'b') {
-				puntatore.pezziNero.forEach(function (value) {
+				Scacchiera.pezziNero.forEach(function (value) {
 					if (value.x === x && value.y === y) obj = value;
 				});
 			}
 			else {
-				puntatore.pezziBianco.forEach(function (value) {
+				Scacchiera.pezziBianco.forEach(function (value) {
 					if (value.x === x && value.y === y) obj = value;
 				});
 			}
+			//visualizza quale pezzo è stato premuto
+			Scacchiera.caselle[indiceVettore].style.backgroundColor = "gray";
 
-			puntatore.caselle[indiceVettore-8].style.backgroundColor = "red";
+			//calcola e visualizza le mosse possibili del pezzo selezionato
+			let mosse = obj.calcolaMossePossibili(Scacchiera);
+			mosse.forEach(function (value) {
+				$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").one("click", function () {
+					obj.move(value[0], value[1]);
+					if (obj instanceof PedoneBianco || obj instanceof PedoneNero) obj.hasMoved = true;
+					$("td").css("backgroundColor", "");
+				});
+			});
 		});
 	}
 }
@@ -97,68 +108,103 @@ class Pezzo {
 		this.y = posY;
 	}
 
-	pos() {
-		return this.x, this.y;
+	move(x, y) {
+		this.x = x;
+		this.y = y;
 	}
+}
+
+class PezzoBianco extends Pezzo {
+	colore = "bianco";
+}
+
+class PezzoNero extends Pezzo {
+	colore = "nero";
 }
 
 //pezzi bianchi
-class PedoneBianco extends Pezzo {
+class PedoneBianco extends PezzoBianco {
 	immagine = "immagini/white_pawn.svg";
-	mosse = [(this.x, this.y - 1), (this.x, this.y - 2), (this.x - 1, this.y - 1), (this.x + 1, this.y - 1)];		//mosse che il pedone può fare in teoria
-	mossePossibili = [];
+	hasMoved = false;
 
-	calcolaMossePossibili(a, b) {
-		for(let i = 0; i<this.mosse.length; i++) {
-			for (let j = 0; j<a; j++) {
-				if (a[j].x != this.mosse[i][0] && a[j].y != this.mosse[i][1]) this.mossePossibili.push(mosse[i]);
+	calcolaMossePossibili(Scacchiera) {
+		let mosse = [[this.x, this.y - 1], [this.x, this.y - 2], [this.x - 1, this.y - 1], [this.x + 1, this.y - 1]]; //mosse che il pedone può fare in teoria
+		let Pezzo = this;	//puntatore al pezzo
+		let occupato = [false, false, false, false];
+
+		let mossePossibili = [];
+
+		//controlla se le caselle possibili sono occupate
+		Scacchiera.getAllPieces().forEach(function (value) {
+			if (value.y === Pezzo.y - 1 && value.x === Pezzo.x) occupato[0] = true;
+			if (value.y === Pezzo.y - 2 && value.x === Pezzo.x) occupato[1] = true;
+			if (value.y === Pezzo.y - 1 && value.x === Pezzo.x - 1 && value.colore === "nero") occupato[2] = true;
+			if (value.y === Pezzo.y - 1 && value.x === Pezzo.x + 1 && value.colore === "nero") occupato[3] = true;
+		});
+
+		//una cella avanti
+		if (Pezzo.y !== 0) {
+
+			if (!occupato[0]) {
+				mossePossibili.push(mosse[0]);
+
+				//due celle avanti
+				if (!occupato[1] && !Pezzo.hasMoved)mossePossibili.push(mosse[1]);
 			}
+
+			//diagonale a sinistra
+			if (occupato[2]) mossePossibili.push(mosse[2]);
+
+			//diagonale a destra
+			if (occupato[3]) mossePossibili.push(mosse[3]);
 		}
+
+		return mossePossibili;
 	}
 }
 
-class ReBianco extends Pezzo {
+class ReBianco extends PezzoBianco {
 	immagine = "immagini/white_king.svg";
 }
 
-class ReginaBianco extends Pezzo {
+class ReginaBianco extends PezzoBianco {
 	immagine = "immagini/white_queen.svg";
 }
 
-class TorreBianco extends Pezzo {
+class TorreBianco extends PezzoBianco {
 	immagine = "immagini/white_rook.svg";
 }
 
-class AlfiereBianco extends Pezzo {
+class AlfiereBianco extends PezzoBianco {
 	immagine = "immagini/white_bishop.svg";
 }
 
-class CavalloBianco extends Pezzo {
+class CavalloBianco extends PezzoBianco {
 	immagine = "immagini/white_knight.svg";
 }
 
 //pezzi neri
-class PedoneNero extends Pezzo {
+class PedoneNero extends PezzoNero {
 	immagine = "immagini/black_pawn.svg";
 }
 
-class ReNero extends Pezzo {
+class ReNero extends PezzoNero {
 	immagine = "immagini/black_king.svg";
 }
 
-class ReginaNero extends Pezzo {
+class ReginaNero extends PezzoNero {
 	immagine = "immagini/black_queen.svg";
 }
 
-class TorreNero extends Pezzo {
+class TorreNero extends PezzoNero {
 	immagine = "immagini/black_rook.svg";
 }
 
-class AlfiereNero extends Pezzo {
+class AlfiereNero extends PezzoNero {
 	immagine = "immagini/black_bishop.svg";
 }
 
-class CavalloNero extends Pezzo {
+class CavalloNero extends PezzoNero {
 	immagine = "immagini/black_knight.svg";
 }
 

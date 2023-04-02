@@ -9,13 +9,13 @@ function loop() {
 		s.caselle[i].innerHTML = "";
 	}
 
-  let pezzi = s.getAllPieces();	//riceve tutti i pezzi presenti sulla scacchiera
+    let pezzi = s.getAllPieces();	//riceve tutti i pezzi presenti sulla scacchiera
 
-  pezzi.forEach(visualizza); //renderizza tutti i pezzi presenti
+    pezzi.forEach(visualizza); //mostra tutti i pezzi presenti
 
-  s.tick(); //aggiorna logica di gioco
+    s.tick(); //aggiorna logica di gioco
 }
 
 function visualizza(target) {	//questa funzione si occupa di visualizzare un solo pezzo (target)
-  s.caselle[target.x + 8 * target.y].innerHTML = '<img src="' + target.immagine + '">';
+  s.caselle[target.x + 8 * target.y].innerHTML = '<img src="' + target.immagine + '" alt="piece">';
 }
