@@ -7,21 +7,25 @@ class Scacchiera {
 		this.puntatore = document.getElementById("tabScacchiera");
 		this.eliminatiBianco = [];
 		this.eliminatiNero = [];
+
+		this.turnoBianco = true;
 	}
 
 	spawn(pezzo) {						//crea un pezzo
-		if (pezzo.immagine[9] === 'w') this.pezziBianco.push(pezzo);
+		if (pezzo.colore === 'bianco') this.pezziBianco.push(pezzo);
 		else this.pezziNero.push(pezzo);
 	}
 
-	delete(pezzo) {						//elimina un pezzo
-		if (pezzo.immagine[9] === 'w') {
-			this.pezziBianco.splice(this.pezziBianco.indexOf(pezzo), 0);
-			this.eliminatiBianco.push(pezzo);
+	delete(pezzo) {
+		let Scacchiera = this;
+		//elimina un pezzo
+		if (pezzo.colore === 'bianco') {
+			Scacchiera.pezziBianco.splice(Scacchiera.pezziBianco.indexOf(pezzo), 1);
+			Scacchiera.eliminatiBianco.push(pezzo);
 		}
 		else {
-			this.pezziNero.splice(this.pezziNero.indexOf(pezzo), 0);
-			this.eliminatiNero.push(pezzo);
+			Scacchiera.pezziNero.splice(Scacchiera.pezziNero.indexOf(pezzo), 1);
+			Scacchiera.eliminatiNero.push(pezzo);
 		}
 	}
 
@@ -65,7 +69,7 @@ class Scacchiera {
 
 		//quando si clicca sull'immagine succedono cose
 		$("img").one("click", function  () {
-			$("td").css("background-color", "");
+			$("td").css("background-color", "").off("click");
 
 			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle (puntatore.caselle) ed estrapolo le coordinate
 			let indiceVettore = Array.prototype.indexOf.call(Scacchiera.caselle, this.parentNode);
@@ -85,17 +89,30 @@ class Scacchiera {
 					if (value.x === x && value.y === y) obj = value;
 				});
 			}
+
 			//visualizza quale pezzo è stato premuto
 			Scacchiera.caselle[indiceVettore].style.backgroundColor = "gray";
 
+
+
 			//calcola e visualizza le mosse possibili del pezzo selezionato
-			let mosse = obj.calcolaMossePossibili(Scacchiera);
-			mosse.forEach(function (value) {
-				$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").one("click", function () {
-					obj.move(value[0], value[1]);
-					if (obj instanceof PedoneBianco || obj instanceof PedoneNero) obj.hasMoved = true;
-					$("td").css("backgroundColor", "");
+			if ((obj.colore === "bianco" && Scacchiera.turnoBianco) || (obj.colore === "nero" && !Scacchiera.turnoBianco)) {
+				let mosse = obj.calcolaMossePossibili(Scacchiera);
+				mosse.forEach(function (value) {
+					$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").one("click", function () {
+						obj.move(value[0], value[1]);
+						Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
+						if (obj instanceof PedoneBianco || obj instanceof PedoneNero) obj.hasMoved = true;
+						$("td").css("backgroundColor", "");
+					});
 				});
+			}
+
+			Scacchiera.getAllPieces().forEach(function (value) {
+				if (value.x === obj.x && value.y === obj.y && value !== obj) {
+					console.log(value.x + ", " + value.y);
+					Scacchiera.delete(value);
+				}
 			});
 		});
 	}
@@ -111,6 +128,10 @@ class Pezzo {
 	move(x, y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	calcolaMossePossibili(Scacchiera){
+		return [];
 	}
 }
 
