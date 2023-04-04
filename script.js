@@ -17,5 +17,5 @@ function loop() {
 }
 
 function visualizza(target) {	//questa funzione si occupa di visualizzare un solo pezzo (target)
-  s.caselle[target.x + 8 * target.y].innerHTML = '<img src="' + target.immagine + '" alt="piece">';
+    s.caselle[target.x + 8 * target.y].innerHTML = '<img src=' + target.immagine + " class= img"+target.colore+ ">";
 }

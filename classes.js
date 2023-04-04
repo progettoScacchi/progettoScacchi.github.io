@@ -66,9 +66,13 @@ class Scacchiera {
 		//puntatore si riferisce sempre alla scacchiera
 		let Scacchiera = this;
 		let obj;
+		let classe;
 
 		//quando si clicca sull'immagine succedono cose
-		$("img").one("click", function  () {
+		if (Scacchiera.turnoBianco) classe = "bianco";
+		else classe = "nero";
+
+		$(".img"+ classe).one("click", function  () {
 			$("td").css("background-color", "").off("click");
 
 			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle (puntatore.caselle) ed estrapolo le coordinate
@@ -93,27 +97,39 @@ class Scacchiera {
 			//visualizza quale pezzo è stato premuto
 			Scacchiera.caselle[indiceVettore].style.backgroundColor = "gray";
 
-
-
 			//calcola e visualizza le mosse possibili del pezzo selezionato
 			if ((obj.colore === "bianco" && Scacchiera.turnoBianco) || (obj.colore === "nero" && !Scacchiera.turnoBianco)) {
 				let mosse = obj.calcolaMossePossibili(Scacchiera);
+
 				mosse.forEach(function (value) {
-					$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").one("click", function () {
+					$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").click(function () {
 						obj.move(value[0], value[1]);
-						Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
+
+						if (Scacchiera.turnoBianco) {
+							Scacchiera.pezziNero.forEach(function (value) {
+								if (value.x === obj.x && value.y === obj.y) {
+									Scacchiera.delete(value);
+								}
+							});
+						}
+						else {
+							Scacchiera.pezziBianco.forEach(function (value) {
+								if (value.x === obj.x && value.y === obj.y) {
+									Scacchiera.delete(value);
+								}
+							});
+						}
+
 						if (obj instanceof PedoneBianco || obj instanceof PedoneNero) obj.hasMoved = true;
 						$("td").css("backgroundColor", "");
+
+						Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
 					});
 				});
+
 			}
 
-			Scacchiera.getAllPieces().forEach(function (value) {
-				if (value.x === obj.x && value.y === obj.y && value !== obj) {
-					console.log(value.x + ", " + value.y);
-					Scacchiera.delete(value);
-				}
-			});
+
 		});
 	}
 }
