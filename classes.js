@@ -1,7 +1,7 @@
 class Scacchiera {
 	constructor() {
 		this.caselle = document.getElementsByTagName("td");
-		this.immagini = document.getElementsByTagName("img");
+		//this.immagini = document.getElementsByTagName("img");
 		this.pezziBianco = [];
 		this.pezziNero = [];
 		this.puntatore = document.getElementById("tabScacchiera");
@@ -42,7 +42,7 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneBianco(i, 6));
 		}
-		this.spawn(new TorreNero(0, 5));
+		this.spawn(new TorreBianco(4, 5));
 
 		//pezzi neri
 		this.spawn(new TorreNero(0, 0));
@@ -63,10 +63,12 @@ class Scacchiera {
 	}
 
 	tick() {
+
 		//puntatore si riferisce sempre alla scacchiera
 		let Scacchiera = this;
-		let obj;
+		let obj = null;
 		let classe;
+		let mosse = [];
 
 		//quando si clicca sull'immagine succedono cose
 		if (Scacchiera.turnoBianco) classe = "bianco";
@@ -99,10 +101,10 @@ class Scacchiera {
 
 			//calcola e visualizza le mosse possibili del pezzo selezionato
 			if ((obj.colore === "bianco" && Scacchiera.turnoBianco) || (obj.colore === "nero" && !Scacchiera.turnoBianco)) {
-				let mosse = obj.calcolaMossePossibili(Scacchiera);
+				mosse = obj.calcolaMossePossibili(Scacchiera);
 
 				mosse.forEach(function (value) {
-					$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").click(function () {
+					$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").one("click", function () {
 						obj.move(value[0], value[1]);
 
 						if (Scacchiera.turnoBianco) {
@@ -121,15 +123,13 @@ class Scacchiera {
 						}
 
 						if (obj instanceof PedoneBianco || obj instanceof PedoneNero) obj.hasMoved = true;
-						$("td").css("backgroundColor", "");
+						$("td").css("backgroundColor", "").off("click");
 
 						Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
 					});
 				});
 
 			}
-
-
 		});
 	}
 }
@@ -210,6 +210,55 @@ class ReginaBianco extends PezzoBianco {
 
 class TorreBianco extends PezzoBianco {
 	immagine = "immagini/white_rook.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+		let fineFor = false;
+
+		//controllo sopra
+		for (let i = Pezzo.y-1; i>=0; i--) {
+			if ($("td:eq(" + (Pezzo.x + 8 * i ) + ")").html() === "")  mossePossibili.push([Pezzo.x, i]);
+			else if ($("td:eq(" + (Pezzo.x + 8 * i ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([Pezzo.x, i]);
+				break;
+			}
+			else break;
+		}
+
+		//controllo a destra
+		for (let i = Pezzo.x+1; i<=7; i++) {
+			if ($("td:eq(" + (i + 8 * Pezzo.y ) + ")").html() === "")  mossePossibili.push([i, Pezzo.y]);
+			else if ($("td:eq(" + (i + 8 * Pezzo.y ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([i, Pezzo.y]);
+				break;
+			}
+			else break;
+		}
+
+		//controllo sotto
+		for (let i = Pezzo.y+1; i<=7; i++) {
+			if ($("td:eq(" + (Pezzo.x + 8 * i ) + ")").html() === "")  mossePossibili.push([Pezzo.x, i]);
+			else if ($("td:eq(" + (Pezzo.x + 8 * i ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([Pezzo.x, i]);
+				break;
+			}
+			else break;
+		}
+
+		//controllo a sinistra
+		for (let i = Pezzo.x-1; i>=0; i--) {
+			if ($("td:eq(" + (i + 8 * Pezzo.y ) + ")").html() === "")  mossePossibili.push([i, Pezzo.y]);
+			else if ($("td:eq(" + (i + 8 * Pezzo.y ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([i, Pezzo.y]);
+				break;
+			}
+			else break;
+		}
+
+
+		return mossePossibili;
+	}
 }
 
 class AlfiereBianco extends PezzoBianco {
@@ -223,6 +272,41 @@ class CavalloBianco extends PezzoBianco {
 //pezzi neri
 class PedoneNero extends PezzoNero {
 	immagine = "immagini/black_pawn.svg";
+	hasMoved = false;
+
+	calcolaMossePossibili(Scacchiera) {
+		let mosse = [[this.x, this.y + 1], [this.x, this.y + 2], [this.x - 1, this.y + 1], [this.x + 1, this.y + 1]]; //mosse che il pedone può fare in teoria
+		let Pezzo = this;	//puntatore al pezzo
+		let occupato = [false, false, false, false];
+
+		let mossePossibili = [];
+
+		//controlla se le caselle possibili sono occupate
+		Scacchiera.getAllPieces().forEach(function (value) {
+			if (value.y === Pezzo.y + 1 && value.x === Pezzo.x) occupato[0] = true;
+			if (value.y === Pezzo.y + 2 && value.x === Pezzo.x) occupato[1] = true;
+			if (value.y === Pezzo.y + 1 && value.x === Pezzo.x - 1 && value.colore === "bianco") occupato[2] = true;
+			if (value.y === Pezzo.y + 1 && value.x === Pezzo.x + 1 && value.colore === "bianco") occupato[3] = true;
+		});
+
+		//una cella avanti
+		if (Pezzo.y !== 7) {
+			if (!occupato[0]) {
+				mossePossibili.push(mosse[0]);
+
+				//due celle avanti
+				if (!occupato[1] && !Pezzo.hasMoved) mossePossibili.push(mosse[1]);
+			}
+
+			//diagonale a sinistra
+			if (occupato[2]) mossePossibili.push(mosse[2]);
+
+			//diagonale a destra
+			if (occupato[3]) mossePossibili.push(mosse[3]);
+		}
+
+		return mossePossibili;
+	}
 }
 
 class ReNero extends PezzoNero {
@@ -235,6 +319,49 @@ class ReginaNero extends PezzoNero {
 
 class TorreNero extends PezzoNero {
 	immagine = "immagini/black_rook.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+		let fineFor = false;
+
+		//controllo sopra
+		for (let i = Pezzo.y - 1; i >= 0; i--) {
+			if ($("td:eq(" + (Pezzo.x + 8 * i) + ")").html() === "") mossePossibili.push([Pezzo.x, i]);
+			else if ($("td:eq(" + (Pezzo.x + 8 * i) + ")").html().search("white") !== -1) {
+				mossePossibili.push([Pezzo.x, i]);
+				break;
+			} else break;
+		}
+
+		//controllo a destra
+		for (let i = Pezzo.x + 1; i <= 7; i++) {
+			if ($("td:eq(" + (i + 8 * Pezzo.y) + ")").html() === "") mossePossibili.push([i, Pezzo.y]);
+			else if ($("td:eq(" + (i + 8 * Pezzo.y) + ")").html().search("white") !== -1) {
+				mossePossibili.push([i, Pezzo.y]);
+				break;
+			} else break;
+		}
+
+		//controllo sotto
+		for (let i = Pezzo.y + 1; i <= 7; i++) {
+			if ($("td:eq(" + (Pezzo.x + 8 * i) + ")").html() === "") mossePossibili.push([Pezzo.x, i]);
+			else if ($("td:eq(" + (Pezzo.x + 8 * i) + ")").html().search("white") !== -1) {
+				mossePossibili.push([Pezzo.x, i]);
+				break;
+			} else break;
+		}
+
+		//controllo a sinistra
+		for (let i = Pezzo.x - 1; i >= 0; i--) {
+			if ($("td:eq(" + (i + 8 * Pezzo.y) + ")").html() === "") mossePossibili.push([i, Pezzo.y]);
+			else if ($("td:eq(" + (i + 8 * Pezzo.y) + ")").html().search("white") !== -1) {
+				mossePossibili.push([i, Pezzo.y]);
+				break;
+			} else break;
+		}
+		return mossePossibili;
+	}
 }
 
 class AlfiereNero extends PezzoNero {
