@@ -42,7 +42,8 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneBianco(i, 6));
 		}
-		this.spawn(new TorreBianco(4, 5));
+		this.spawn(new ReginaNero(4, 5));
+		this.spawn(new ReBianco(4, 3));
 
 		//pezzi neri
 		this.spawn(new TorreNero(0, 0));
@@ -202,10 +203,24 @@ class PedoneBianco extends PezzoBianco {
 
 class ReBianco extends PezzoBianco {
 	immagine = "immagini/white_king.svg";
-}
 
-class ReginaBianco extends PezzoBianco {
-	immagine = "immagini/white_queen.svg";
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+
+		for (let i = Pezzo.y-1; i<=Pezzo.y+1; i++) {
+			if (i<0 || i>7) continue;
+			for (let j = Pezzo.x-1; j<=Pezzo.x+1; j++) {
+				if (j<0 || j>7) continue;
+				if (i !== Pezzo.y || j !== Pezzo.x) {
+					if ($("td:eq(" + (j + 8 * i) + ")").html() === "") mossePossibili.push([j, i]);
+					else if ($("td:eq(" + (j + 8 * i) + ")").html().search("black") !== -1) mossePossibili.push([j, i]);
+				}
+			}
+		}
+
+		return mossePossibili;
+	}
 }
 
 class TorreBianco extends PezzoBianco {
@@ -214,7 +229,6 @@ class TorreBianco extends PezzoBianco {
 	calcolaMossePossibili(Scacchiera) {
 		let Pezzo = this;
 		let mossePossibili = [];
-		let fineFor = false;
 
 		//controllo sopra
 		for (let i = Pezzo.y-1; i>=0; i--) {
@@ -256,13 +270,90 @@ class TorreBianco extends PezzoBianco {
 			else break;
 		}
 
-
 		return mossePossibili;
 	}
 }
 
 class AlfiereBianco extends PezzoBianco {
 	immagine = "immagini/white_bishop.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+
+		let mossaX = Pezzo.x;
+		let mossaY = Pezzo.y;
+
+		//in alto a sinistra
+		while (mossaX > 0 && mossaY > 0) {
+			mossaX--;
+			mossaY--;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		mossaX = Pezzo.x;
+		mossaY = Pezzo.y;
+
+		//in alto a destra
+		while (mossaX < 7 && mossaY > 0) {
+			mossaX++;
+			mossaY--;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		mossaX = Pezzo.x;
+		mossaY = Pezzo.y;
+
+		//in basso a destra
+		while (mossaX < 7 && mossaY < 7) {
+			mossaX++;
+			mossaY++;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		mossaX = Pezzo.x;
+		mossaY = Pezzo.y;
+
+		//in basso a sinistra
+		while (mossaX > 0 && mossaY < 7) {
+			mossaX--;
+			mossaY++;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		return mossePossibili;
+	}
+}
+
+class ReginaBianco extends PezzoBianco{
+	immagine = "immagini/white_queen.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let alfiere = new AlfiereBianco(this.x, this.y);
+		let torre = new TorreBianco(this.x, this.y);
+
+		return alfiere.calcolaMossePossibili(Scacchiera).concat(torre.calcolaMossePossibili(Scacchiera));;
+	}
 }
 
 class CavalloBianco extends PezzoBianco {
@@ -311,10 +402,24 @@ class PedoneNero extends PezzoNero {
 
 class ReNero extends PezzoNero {
 	immagine = "immagini/black_king.svg";
-}
 
-class ReginaNero extends PezzoNero {
-	immagine = "immagini/black_queen.svg";
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+
+		for (let i = Pezzo.y-1; i<=Pezzo.y+1; i++) {
+			if (i<0 || i>7) continue;
+			for (let j = Pezzo.x-1; j<=Pezzo.x+1; j++) {
+				if (j<0 || j>7) continue;
+				if (i !== Pezzo.y || j !== Pezzo.x) {
+					if ($("td:eq(" + (j + 8 * i) + ")").html() === "") mossePossibili.push([j, i]);
+					else if ($("td:eq(" + (j + 8 * i) + ")").html().search("white") !== -1) mossePossibili.push([j, i]);
+				}
+			}
+		}
+
+		return mossePossibili;
+	}
 }
 
 class TorreNero extends PezzoNero {
@@ -366,6 +471,84 @@ class TorreNero extends PezzoNero {
 
 class AlfiereNero extends PezzoNero {
 	immagine = "immagini/black_bishop.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+
+		let mossaX = Pezzo.x;
+		let mossaY = Pezzo.y;
+
+		//in alto a sinistra
+		while (mossaX > 0 && mossaY > 0) {
+			mossaX--;
+			mossaY--;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("white") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		mossaX = Pezzo.x;
+		mossaY = Pezzo.y;
+
+		//in alto a destra
+		while (mossaX < 7 && mossaY > 0) {
+			mossaX++;
+			mossaY--;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("white") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		mossaX = Pezzo.x;
+		mossaY = Pezzo.y;
+
+		//in basso a destra
+		while (mossaX < 7 && mossaY < 7) {
+			mossaX++;
+			mossaY++;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("white") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		mossaX = Pezzo.x;
+		mossaY = Pezzo.y;
+
+		//in basso a sinistra
+		while (mossaX > 0 && mossaY < 7) {
+			mossaX--;
+			mossaY++;
+			if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
+			else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("white") !== -1) {
+				mossePossibili.push([mossaX, mossaY]);
+				break;
+			}
+			else break;
+		}
+
+		return mossePossibili;
+	}
+}
+
+class ReginaNero extends PezzoNero {
+	immagine = "immagini/black_queen.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let alfiere = new AlfiereNero(this.x, this.y);
+		let torre = new TorreNero(this.x, this.y);
+
+		return alfiere.calcolaMossePossibili(Scacchiera).concat(torre.calcolaMossePossibili(Scacchiera));;
+	}
 }
 
 class CavalloNero extends PezzoNero {
