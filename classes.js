@@ -1,13 +1,11 @@
 class Scacchiera {
 	constructor() {
 		this.caselle = document.getElementsByTagName("td");
-		//this.immagini = document.getElementsByTagName("img");
 		this.pezziBianco = [];
 		this.pezziNero = [];
 		this.puntatore = document.getElementById("tabScacchiera");
 		this.eliminatiBianco = [];
 		this.eliminatiNero = [];
-
 		this.turnoBianco = true;
 	}
 
@@ -42,8 +40,6 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneBianco(i, 6));
 		}
-		this.spawn(new ReginaNero(4, 5));
-		this.spawn(new ReBianco(4, 3));
 
 		//pezzi neri
 		this.spawn(new TorreNero(0, 0));
@@ -63,8 +59,45 @@ class Scacchiera {
 		return this.pezziBianco.concat(this.pezziNero);
 	}
 
-	tick() {
+	getEliminati() {
+		return this.eliminatiBianco.concat(this.eliminatiNero);
+	}
 
+	controlloScacco() {
+		let Scacchiera = this;
+		let trovato = false;
+
+		if (Scacchiera.turnoBianco) {
+			let ReX;
+			let ReY;
+
+			Scacchiera.pezziBianco.every(function (value) {
+				if (value instanceof ReBianco) {
+					ReX = value.x;
+					ReY = value.y;
+					return false;
+				}
+				else return true;
+			});
+
+			Scacchiera.pezziNero.every(function (value) {
+				let mosse = value.calcolaMossePossibili(Scacchiera);
+				mosse.every(function (value) {
+					if (value[0] === ReX && value[1] === ReY) {
+						$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
+
+						trovato = true;
+						return false;
+					}
+					else return true;
+				})
+				return !trovato;
+			});
+		}
+		return trovato;
+	}
+
+	tick() {
 		//puntatore si riferisce sempre alla scacchiera
 		let Scacchiera = this;
 		let obj = null;
@@ -89,11 +122,13 @@ class Scacchiera {
 			if (this.src.split("/")[this.src.split("/").length-1][0] === 'b') {
 				Scacchiera.pezziNero.forEach(function (value) {
 					if (value.x === x && value.y === y) obj = value;
+					if (value instanceof PedoneNero) value.enPassantPossibile = false;
 				});
 			}
 			else {
 				Scacchiera.pezziBianco.forEach(function (value) {
 					if (value.x === x && value.y === y) obj = value;
+					if (value instanceof PedoneBianco) value.enPassantPossibile = false;
 				});
 			}
 
@@ -105,33 +140,54 @@ class Scacchiera {
 				mosse = obj.calcolaMossePossibili(Scacchiera);
 
 				mosse.forEach(function (value) {
-					$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").one("click", function () {
-						obj.move(value[0], value[1]);
+					let prevX = obj.x;
+					let prevY = obj.y;
+					obj.move(value[0], value[1]);
+					//visualizza(obj);
+					//console.log(obj.x + ", " + obj.y)
 
-						if (Scacchiera.turnoBianco) {
-							Scacchiera.pezziNero.forEach(function (value) {
-								if (value.x === obj.x && value.y === obj.y) {
-									Scacchiera.delete(value);
-								}
-							});
-						}
-						else {
-							Scacchiera.pezziBianco.forEach(function (value) {
-								if (value.x === obj.x && value.y === obj.y) {
-									Scacchiera.delete(value);
-								}
-							});
-						}
+					if (Scacchiera.controlloScacco()) {
+						mosse.splice(mosse.indexOf(value), 1);
+						//console.log("AAAAAAA");
+						obj.move(prevX, prevY);
+						//visualizza(obj);
+					}
 
-						if (obj instanceof PedoneBianco || obj instanceof PedoneNero) obj.hasMoved = true;
-						$("td").css("backgroundColor", "").off("click");
+					else {
+						obj.move(prevX, prevY);
+						//visualizza(obj);
+						$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "red").one("click", function () {
+							obj.move(value[0], value[1]);
 
-						Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
-					});
+							if (Scacchiera.turnoBianco) {
+								Scacchiera.pezziNero.forEach(function (value) {
+									if (value.x === obj.x && value.y === obj.y) Scacchiera.delete(value);
+									else if (value instanceof PedoneNero && value.x === obj.x && value.y === obj.y+1) Scacchiera.delete(value);
+								});
+							}
+							else {
+								Scacchiera.pezziBianco.forEach(function (value) {
+									if (value.x === obj.x && value.y === obj.y) Scacchiera.delete(value);
+									else if (value instanceof PedoneBianco && value.x === obj.x && value.y === obj.y-1) Scacchiera.delete(value);
+								});
+							}
+
+							if (obj instanceof PedoneBianco || obj instanceof PedoneNero) {
+								obj.enPassantPossibile = true;
+								obj.hasMoved = true;
+							}
+							$("td").css("backgroundColor", "").off("click");
+
+							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
+							console.log("AAAAAAA");
+							gira();
+						});
+					}
+
 				});
-
 			}
 		});
+		Scacchiera.controlloScacco();
 	}
 }
 
@@ -164,11 +220,11 @@ class PezzoNero extends Pezzo {
 class PedoneBianco extends PezzoBianco {
 	immagine = "immagini/white_pawn.svg";
 	hasMoved = false;
+	enPassantPossibile = false;
 
 	calcolaMossePossibili(Scacchiera) {
-		let mosse = [[this.x, this.y - 1], [this.x, this.y - 2], [this.x - 1, this.y - 1], [this.x + 1, this.y - 1]]; //mosse che il pedone può fare in teoria
 		let Pezzo = this;	//puntatore al pezzo
-		let occupato = [false, false, false, false];
+		let occupato = [false, false, false, false, false, false];
 
 		let mossePossibili = [];
 
@@ -178,23 +234,24 @@ class PedoneBianco extends PezzoBianco {
 			if (value.y === Pezzo.y - 2 && value.x === Pezzo.x) occupato[1] = true;
 			if (value.y === Pezzo.y - 1 && value.x === Pezzo.x - 1 && value.colore === "nero") occupato[2] = true;
 			if (value.y === Pezzo.y - 1 && value.x === Pezzo.x + 1 && value.colore === "nero") occupato[3] = true;
+			if (value.y === Pezzo.y && value.x === Pezzo.x - 1 && value instanceof PedoneNero && value.enPassantPossibile) occupato[4] = true;
+			if (value.y === Pezzo.y && value.x === Pezzo.x + 1 && value instanceof PedoneNero && value.enPassantPossibile) occupato[5] = true;
 		});
 
 		//una cella avanti
 		if (Pezzo.y !== 0) {
-
 			if (!occupato[0]) {
-				mossePossibili.push(mosse[0]);
+				mossePossibili.push([this.x, this.y - 1]);
 
 				//due celle avanti
-				if (!occupato[1] && !Pezzo.hasMoved)mossePossibili.push(mosse[1]);
+				if (!occupato[1] && !Pezzo.hasMoved)mossePossibili.push([this.x, this.y - 2]);
 			}
 
-			//diagonale a sinistra
-			if (occupato[2]) mossePossibili.push(mosse[2]);
+			//diagonale a sinistra ed en passant a sinistra
+			if (occupato[2] || occupato[4]) mossePossibili.push([this.x - 1, this.y - 1]);
 
-			//diagonale a destra
-			if (occupato[3]) mossePossibili.push(mosse[3]);
+			//diagonale a destra ed en passant a destra
+			if (occupato[3] || occupato[5]) mossePossibili.push([this.x + 1, this.y - 1]);
 		}
 
 		return mossePossibili;
@@ -358,17 +415,73 @@ class ReginaBianco extends PezzoBianco{
 
 class CavalloBianco extends PezzoBianco {
 	immagine = "immagini/white_knight.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+
+		if (Pezzo.y+2 <= 7) {
+			if (Pezzo.x+1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x+1 + 8*(Pezzo.y+2)) + ")").html() === "") mossePossibili.push([Pezzo.x+1, Pezzo.y+2]);
+				else if ($("td:eq(" + (Pezzo.x+1 + 8*(Pezzo.y+2)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x+1, Pezzo.y+2]);
+			}
+
+			if (Pezzo.x-1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x-1 + 8*(Pezzo.y+2)) + ")").html() === "") mossePossibili.push([Pezzo.x-1, Pezzo.y+2]);
+				else if ($("td:eq(" + (Pezzo.x-1 + 8*(Pezzo.y+2)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x-1, Pezzo.y+2]);
+			}
+		}
+
+		if (Pezzo.y-2 >= 0) {
+			if (Pezzo.x+1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x+1 + 8*(Pezzo.y-2)) + ")").html() === "") mossePossibili.push([Pezzo.x+1, Pezzo.y-2]);
+				else if ($("td:eq(" + (Pezzo.x+1 + 8*(Pezzo.y-2)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x+1, Pezzo.y-2]);
+			}
+
+			if (Pezzo.x-1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x-1 + 8*(Pezzo.y-2)) + ")").html() === "") mossePossibili.push([Pezzo.x-1, Pezzo.y-2]);
+				else if ($("td:eq(" + (Pezzo.x-1 + 8*(Pezzo.y-2)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x-1, Pezzo.y-2]);
+			}
+		}
+
+
+		if (Pezzo.x+2 <= 7) {
+			if (Pezzo.y+1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x+2 + 8*(Pezzo.y+1)) + ")").html() === "") mossePossibili.push([Pezzo.x+2, Pezzo.y+1]);
+				else if ($("td:eq(" + (Pezzo.x+2 + 8*(Pezzo.y+1)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x+2, Pezzo.y+1]);
+			}
+
+			if (Pezzo.y-1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x-2 + 8*(Pezzo.y+1)) + ")").html() === "") mossePossibili.push([Pezzo.x-2, Pezzo.y+1]);
+				else if ($("td:eq(" + (Pezzo.x-2 + 8*(Pezzo.y+1)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x-2, Pezzo.y+1]);
+			}
+		}
+
+		if (Pezzo.x-2 >= 0) {
+			if (Pezzo.y+1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x+2 + 8*(Pezzo.y-1)) + ")").html() === "") mossePossibili.push([Pezzo.x+2, Pezzo.y-1]);
+				else if ($("td:eq(" + (Pezzo.x+2 + 8*(Pezzo.y-1)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x+2, Pezzo.y-1]);
+			}
+
+			if (Pezzo.y-1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x-2 + 8*(Pezzo.y-1)) + ")").html() === "") mossePossibili.push([Pezzo.x-2, Pezzo.y-1]);
+				else if ($("td:eq(" + (Pezzo.x-2 + 8*(Pezzo.y-1)) + ")").html().search("black") !== -1) mossePossibili.push([Pezzo.x-2, Pezzo.y-1]);
+			}
+		}
+
+		return mossePossibili;
+	}
 }
 
 //pezzi neri
 class PedoneNero extends PezzoNero {
 	immagine = "immagini/black_pawn.svg";
 	hasMoved = false;
+	enPassantPossibile = false;
 
 	calcolaMossePossibili(Scacchiera) {
-		let mosse = [[this.x, this.y + 1], [this.x, this.y + 2], [this.x - 1, this.y + 1], [this.x + 1, this.y + 1]]; //mosse che il pedone può fare in teoria
 		let Pezzo = this;	//puntatore al pezzo
-		let occupato = [false, false, false, false];
+		let occupato = [false, false, false, false, false, false];
 
 		let mossePossibili = [];
 
@@ -378,22 +491,24 @@ class PedoneNero extends PezzoNero {
 			if (value.y === Pezzo.y + 2 && value.x === Pezzo.x) occupato[1] = true;
 			if (value.y === Pezzo.y + 1 && value.x === Pezzo.x - 1 && value.colore === "bianco") occupato[2] = true;
 			if (value.y === Pezzo.y + 1 && value.x === Pezzo.x + 1 && value.colore === "bianco") occupato[3] = true;
+			if (value.y === Pezzo.y && value.x === Pezzo.x - 1 && value instanceof PedoneBianco && value.enPassantPossibile) occupato[4] = true;
+			if (value.y === Pezzo.y && value.x === Pezzo.x + 1 && value instanceof PedoneBianco && value.enPassantPossibile) occupato[5] = true;
 		});
 
 		//una cella avanti
 		if (Pezzo.y !== 7) {
 			if (!occupato[0]) {
-				mossePossibili.push(mosse[0]);
+				mossePossibili.push([this.x, this.y + 1]);
 
 				//due celle avanti
-				if (!occupato[1] && !Pezzo.hasMoved) mossePossibili.push(mosse[1]);
+				if (!occupato[1] && !Pezzo.hasMoved) mossePossibili.push([this.x, this.y + 2]);
 			}
 
-			//diagonale a sinistra
-			if (occupato[2]) mossePossibili.push(mosse[2]);
+			//diagonale a sinistra ed en passant a sinistra
+			if (occupato[2] || occupato[4]) mossePossibili.push([this.x - 1, this.y + 1]);
 
-			//diagonale a destra
-			if (occupato[3]) mossePossibili.push(mosse[3]);
+			//diagonale a destra ed en passant a destra
+			if (occupato[3] || occupato[5]) mossePossibili.push([this.x + 1, this.y + 1]);
 		}
 
 		return mossePossibili;
@@ -553,5 +668,61 @@ class ReginaNero extends PezzoNero {
 
 class CavalloNero extends PezzoNero {
 	immagine = "immagini/black_knight.svg";
+
+	calcolaMossePossibili(Scacchiera) {
+		let Pezzo = this;
+		let mossePossibili = [];
+
+		if (Pezzo.y + 2 <= 7) {
+			if (Pezzo.x + 1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x + 1 + 8 * (Pezzo.y + 2)) + ")").html() === "") mossePossibili.push([Pezzo.x + 1, Pezzo.y + 2]);
+				else if ($("td:eq(" + (Pezzo.x + 1 + 8 * (Pezzo.y + 2)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x + 1, Pezzo.y + 2]);
+			}
+
+			if (Pezzo.x - 1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x - 1 + 8 * (Pezzo.y + 2)) + ")").html() === "") mossePossibili.push([Pezzo.x - 1, Pezzo.y + 2]);
+				else if ($("td:eq(" + (Pezzo.x - 1 + 8 * (Pezzo.y + 2)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x - 1, Pezzo.y + 2]);
+			}
+		}
+
+		if (Pezzo.y - 2 >= 0) {
+			if (Pezzo.x + 1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x + 1 + 8 * (Pezzo.y - 2)) + ")").html() === "") mossePossibili.push([Pezzo.x + 1, Pezzo.y - 2]);
+				else if ($("td:eq(" + (Pezzo.x + 1 + 8 * (Pezzo.y - 2)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x + 1, Pezzo.y - 2]);
+			}
+
+			if (Pezzo.x - 1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x - 1 + 8 * (Pezzo.y - 2)) + ")").html() === "") mossePossibili.push([Pezzo.x - 1, Pezzo.y - 2]);
+				else if ($("td:eq(" + (Pezzo.x - 1 + 8 * (Pezzo.y - 2)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x - 1, Pezzo.y - 2]);
+			}
+		}
+
+
+		if (Pezzo.x + 2 <= 7) {
+			if (Pezzo.y + 1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x + 2 + 8 * (Pezzo.y + 1)) + ")").html() === "") mossePossibili.push([Pezzo.x + 2, Pezzo.y + 1]);
+				else if ($("td:eq(" + (Pezzo.x + 2 + 8 * (Pezzo.y + 1)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x + 2, Pezzo.y + 1]);
+			}
+
+			if (Pezzo.y - 1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x - 2 + 8 * (Pezzo.y + 1)) + ")").html() === "") mossePossibili.push([Pezzo.x - 2, Pezzo.y + 1]);
+				else if ($("td:eq(" + (Pezzo.x - 2 + 8 * (Pezzo.y + 1)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x - 2, Pezzo.y + 1]);
+			}
+		}
+
+		if (Pezzo.x - 2 >= 0) {
+			if (Pezzo.y + 1 <= 7) {
+				if ($("td:eq(" + (Pezzo.x + 2 + 8 * (Pezzo.y - 1)) + ")").html() === "") mossePossibili.push([Pezzo.x + 2, Pezzo.y - 1]);
+				else if ($("td:eq(" + (Pezzo.x + 2 + 8 * (Pezzo.y - 1)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x + 2, Pezzo.y - 1]);
+			}
+
+			if (Pezzo.y - 1 >= 0) {
+				if ($("td:eq(" + (Pezzo.x - 2 + 8 * (Pezzo.y - 1)) + ")").html() === "") mossePossibili.push([Pezzo.x - 2, Pezzo.y - 1]);
+				else if ($("td:eq(" + (Pezzo.x - 2 + 8 * (Pezzo.y - 1)) + ")").html().search("white") !== -1) mossePossibili.push([Pezzo.x - 2, Pezzo.y - 1]);
+			}
+		}
+
+		return mossePossibili;
+	}
 }
 
