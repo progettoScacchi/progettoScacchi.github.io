@@ -22,22 +22,15 @@ table{
 }
 
 td{
-  border-collapse: collapse;
-  width: 80px;
-  height: 80px;
-	min-width: 80px;
-	max-width: 80px;
-	min-height: 80px;
-	max-height: 80px;
+	border-collapse: collapse;
+	width: 80px;
+	height: 80px;
 	margin: 0;
 	padding: 0;
 }
 
 tr {
 	border-collapse: collapse;
-	height: 80px;
-	max-width: 80px;
-	max-height: 80px;
 	margin: 0;
 	padding: 0;
 }
@@ -51,9 +44,10 @@ tr {
 }
 
 img{
-  height: 80px;
-	width: 80px;
-	margin: 0;
+	display: block;
+	height: 70px;
+	width: 70px;
+	margin: auto;
 	padding: 0;
 }
 
@@ -72,6 +66,9 @@ img{
 #bottomRight {
 	border-radius: 0 0 0 20px;
 }
+
+
+
 
 #eliminatinero {
 	float: left;
