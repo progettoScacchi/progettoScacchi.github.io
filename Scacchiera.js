@@ -29,21 +29,16 @@ class Scacchiera {
 
 	generaIniziale() {							//genera la disposizione iniziale
 		//genera pezzi bianchi
-		this.spawn(new ReBianco(4, 7));
-		this.spawn(new ReginaNero(0, 0));
-		/*
-		for (let i = 0; i < 8; i++) {
+		this.spawn(new ReBianco(7, 6));
+		this.spawn(new ReginaNero(7, 5));
+
+		for (let i = 0; i < 7; i++) {
 			this.spawn(new PedoneBianco(i, 6));
 		}
-		*/
+
 
 		//pezzi neri
 
-		/*
-		for (let i = 0; i < 8; i++) {
-			this.spawn(new PedoneNero(i, 1));
-		}
-		*/
 	}
 
 	getAllPieces() {		//restituisce tutti i pezzi presenti sulla scacchiera
@@ -72,21 +67,26 @@ class Scacchiera {
 			});
 
 			Scacchiera.pezziNero.every(function (value) {
+				let cattura = false;
+				let pezzo = null;
+
+				Scacchiera.pezziNero.forEach(function (value) {
+					if (value.x === obj.x && value.y === obj.y) Scacchiera.delete(value);
+					else if (value instanceof PedoneNero && value.x === obj.x && value.y === obj.y + 1) Scacchiera.delete(value);
+				});
+
 				let mosse = value.calcolaMossePossibili(Scacchiera);
 				mosse.every(function (value) {
-					$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "green");
-					if (ReX === 3 && ReY === 7) {
-						console.log(value[0] + ", " + value[1]);
-					}
-
 					if (value[0] === ReX && value[1] === ReY) {
-						//$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
-
+						$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
 						trovato = true;
 						return false;
 					}
 					return true;
 				})
+
+				if (cattura) Scacchiera.spawn(pezzo);
+
 				return !trovato;
 			});
 		}
@@ -134,21 +134,22 @@ class Scacchiera {
 			//calcola e visualizza le mosse possibili del pezzo selezionato
 			if ((obj.colore === "bianco" && Scacchiera.turnoBianco) || (obj.colore === "nero" && !Scacchiera.turnoBianco)) {
 				mosse = obj.calcolaMossePossibili(Scacchiera);
-				console.clear();
 
 				mosse.forEach(function (value) {
 					let objX = obj.x;
 					let objY = obj.y;
 					obj.move(value[0], value[1]);
+					$("td:eq(" + (objX + 8*objY) + ")").html("");
 					visualizza(obj);
 					if (Scacchiera.controlloScacco()) {
+						$("td:eq(" + (value[0] + 8*value[1]) + ")").html("");
 						obj.move(objX, objY);
 						visualizza(obj);
 					}
 					else {
 						obj.move(objX, objY);
 						visualizza(obj);
-						$("td:eq(" + (value[0] + 8 * value[1]) + ")").css("backgroundColor", "red").one("click", function () {
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("").css("backgroundColor", "red").one("click", function () {
 							obj.move(value[0], value[1]);
 
 							//si muove il pezzo scelto nella casella scelta
@@ -228,6 +229,6 @@ class Scacchiera {
 				});
 			}
 		});
-		//Scacchiera.controlloScacco();
+		Scacchiera.controlloScacco();
 	}
 }
