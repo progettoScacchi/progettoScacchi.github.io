@@ -192,6 +192,7 @@ class Scacchiera {
 
 		$(".img"+ classe).one("click", function  () {
 			$("td").css("background-color", "").off("click");
+			$("td").removeClass("selezionato").off("click");
 
 			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle (puntatore.caselle) ed estrapolo le coordinate
 			let indiceVettore = Array.prototype.indexOf.call(Scacchiera.caselle, this.parentNode);
@@ -201,6 +202,7 @@ class Scacchiera {
 			//prende il percorso assoluto dell'immagine, lo divide per le barre, prende l'ultima stringa (il nome dell'immagine) e controlla attraverso la prima lettera
 			//a quale colore appartiene l'immagine.
 			//poi cerca tra tutti gli oggetti quale ha le stesse coordinate dell'immagine
+			
 			if (this.src.split("/")[this.src.split("/").length-1][0] === 'b') {
 				Scacchiera.pezziNero.forEach(function (value) {
 					if (value.x === x && value.y === y) obj = value;
@@ -215,7 +217,8 @@ class Scacchiera {
 			}
 
 			//visualizza quale pezzo è stato premuto
-			Scacchiera.caselle[indiceVettore].style.backgroundColor = "gray";
+			$("td:eq("+ indiceVettore +")").addClass("selezionato"); 
+
 
 			//calcola e visualizza le mosse possibili del pezzo selezionato
 			if ((obj.colore === "bianco" && Scacchiera.turnoBianco) || (obj.colore === "nero" && !Scacchiera.turnoBianco)) {
@@ -251,6 +254,8 @@ class Scacchiera {
 								});
 							}
 
+							
+							
 							//arrocco bianco
 							if (obj instanceof ReBianco && obj.arroccoPossibile) {
 								if (obj.x === 6 && obj.y === 7) {
@@ -306,6 +311,7 @@ class Scacchiera {
 							}
 
 							$("td").css("backgroundColor", "").off("click");
+							$("td").removeClass("selezionato").off("click");
 
 							//cambia il turno
 							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
