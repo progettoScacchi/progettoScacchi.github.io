@@ -14,20 +14,21 @@ body {
 }
 
 table{
-  margin: auto;
-  border-collapse: collapse;
-
+	margin: auto;
+	border-collapse: collapse;
 	border-radius: 20px;
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
 
-td{
+
+td {
 	border-collapse: collapse;
 	width: 80px;
 	height: 80px;
 	margin: 0;
 	padding: 0;
 }
+
 
 tr {
 	border-collapse: collapse;
@@ -45,9 +46,9 @@ tr {
 
 img{
 	display: block;
+	margin: auto;
 	height: 70px;
 	width: 70px;
-	margin: auto;
 	padding: 0;
 }
 
@@ -67,13 +68,36 @@ img{
 	border-radius: 0 0 0 20px;
 }
 
+
+
 .selezionato{
 
-	border-radius: 1000px;
-	background-color: gray;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 0.5);
 	width: 50px;
 	height: 50px;
+	
 }
+
+.mosse {
+
+}
+
+
+.scacco {
+
+}
+
+.scaccomatto {
+
+}
+
+.stallo{
+
+}
+
+
+
 
 
 #eliminatinero {
