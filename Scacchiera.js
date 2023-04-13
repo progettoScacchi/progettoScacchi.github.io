@@ -29,15 +29,30 @@ class Scacchiera {
 
 	generaIniziale() {							//genera la disposizione iniziale
 		//genera pezzi bianchi
-		this.spawn(new ReBianco(7, 6));
-		this.spawn(new ReginaNero(7, 5));
-
-		for (let i = 0; i < 7; i++) {
+		this.spawn(new TorreBianco(0, 7));
+		this.spawn(new CavalloBianco(1, 7));
+		this.spawn(new AlfiereBianco(2, 7));
+		this.spawn(new ReginaBianco(3, 7));
+		this.spawn(new ReBianco(4, 7));
+		this.spawn(new AlfiereBianco(5, 7));
+		this.spawn(new CavalloBianco(6, 7));
+		this.spawn(new TorreBianco(7, 7));
+		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneBianco(i, 6));
 		}
 
-
 		//pezzi neri
+		this.spawn(new TorreNero(0, 0));
+		this.spawn(new CavalloNero(1, 0));
+		this.spawn(new AlfiereNero(2, 0));
+		this.spawn(new ReginaNero(3, 0));
+		this.spawn(new ReNero(4, 0));
+		this.spawn(new AlfiereNero(5, 0));
+		this.spawn(new CavalloNero(6, 0));
+		this.spawn(new TorreNero(7, 0));
+		for (let i = 0; i < 8; i++) {
+			this.spawn(new PedoneNero(i, 1));
+		}
 
 	}
 
@@ -52,28 +67,35 @@ class Scacchiera {
 	controlloScacco() {
 		let Scacchiera = this;
 		let trovato = false;		//controllo se ho trovato una mossa che ci rende in scacco
+		let ReX;
+		let ReY;
+
+		let pezzoCatturato = null;
 
 		if (Scacchiera.turnoBianco) {
-			let ReX;
-			let ReY;
-
+			//scorre tutti i pezzi del bianco
 			Scacchiera.pezziBianco.every(function (value) {
+
+				//trova in che posizione si trova il re Bianco
 				if (value instanceof ReBianco) {
 					ReX = value.x;
 					ReY = value.y;
-					return false;
 				}
+
+				//scorre tutti i pezzi del nero e se trova che uno sovrappone uno dei pezzi del bianco lo elimina temporaneamente
+				//questo serve a contare in caso di scacco anche quelle mosse che rimuovono lo scacco catturando un pezzo
+				Scacchiera.pezziNero.every(function (target) {
+					if (value.x === target.x && value.y === target.y) {
+						pezzoCatturato = target;
+						Scacchiera.delete(target);
+						Scacchiera.eliminatiNero.pop();
+						return false;
+					}
+				});
 				return true;
 			});
 
 			Scacchiera.pezziNero.every(function (value) {
-				let cattura = false;
-				let pezzo = null;
-
-				Scacchiera.pezziNero.forEach(function (value) {
-					if (value.x === obj.x && value.y === obj.y) Scacchiera.delete(value);
-					else if (value instanceof PedoneNero && value.x === obj.x && value.y === obj.y + 1) Scacchiera.delete(value);
-				});
 
 				let mosse = value.calcolaMossePossibili(Scacchiera);
 				mosse.every(function (value) {
@@ -85,14 +107,57 @@ class Scacchiera {
 					return true;
 				})
 
-				if (cattura) Scacchiera.spawn(pezzo);
+				return !trovato;
+			});
+
+			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
+		}
+
+		else {
+			//scorre tutti i pezzi del nero
+			Scacchiera.pezziNero.every(function (value) {
+
+				//trova in che posizione si trova il re Nero
+				if (value instanceof ReNero) {
+					ReX = value.x;
+					ReY = value.y;
+				}
+
+				//scorre tutti i pezzi del bianco e se trova che uno sovrappone uno dei pezzi del nero lo elimina temporaneamente
+				//questo serve a contare in caso di scacco anche quelle mosse che rimuovono lo scacco catturando un pezzo
+				Scacchiera.pezziBianco.every(function (target) {
+					if (value.x === target.x && value.y === target.y) {
+						pezzoCatturato = target;
+						Scacchiera.delete(target);
+						Scacchiera.eliminatiBianco.pop();
+						return false;
+					}
+				});
+				return true;
+			});
+
+			Scacchiera.pezziBianco.every(function (value) {
+
+				let mosse = value.calcolaMossePossibili(Scacchiera);
+				mosse.every(function (value) {
+					if (value[0] === ReX && value[1] === ReY) {
+						$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
+						trovato = true;
+						return false;
+					}
+					return true;
+				})
 
 				return !trovato;
 			});
+
+			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
 		}
 		return trovato;
 	}
 
+
+	//aggiorna la logica di gioco
 	tick() {
 		//puntatore si riferisce sempre alla scacchiera
 		let Scacchiera = this;
