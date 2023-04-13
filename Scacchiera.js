@@ -129,7 +129,11 @@ class Scacchiera {
 			}
 
 			//visualizza quale pezzo è stato premuto
-			Scacchiera.caselle[indiceVettore].style.backgroundColor = "gray";
+			$(pezzo).click(function(){
+				  $(this).addClass(selezionato);
+			  });
+
+			//Scacchiera.caselle[indiceVettore].style.backgroundColor = "gray";
 
 			//calcola e visualizza le mosse possibili del pezzo selezionato
 			if ((obj.colore === "bianco" && Scacchiera.turnoBianco) || (obj.colore === "nero" && !Scacchiera.turnoBianco)) {
