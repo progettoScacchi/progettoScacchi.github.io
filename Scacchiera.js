@@ -10,6 +10,10 @@ class Scacchiera {
 
 		this.reNero = null;
 		this.reBianco = null;
+
+		this.stallo = false;
+		this.scacco = false;
+		this.scaccoMatto = false;
 	}
 
 	spawn(pezzo) {						//crea un pezzo
@@ -31,8 +35,8 @@ class Scacchiera {
 	}
 
 	generaIniziale() {							//genera la disposizione iniziale
-		this.reBianco = new ReBianco(4, 7);
-		this.reNero = new ReNero(4, 0);
+		this.reBianco = new ReBianco(0, 7);
+		this.reNero = new ReNero(7, 7);
 
 		//genera pezzi bianchi
 		/*
@@ -63,11 +67,10 @@ class Scacchiera {
 		}
 		*/
 
-		this.spawn(new ReginaNero(5, 0));
+		this.spawn(new ReginaBianco(5, 0));
 
-		this.spawn(new TorreBianco(0, 7));
+		this.spawn(this.reNero);
 		this.spawn(this.reBianco);
-		this.spawn(new TorreBianco(7, 7));
 	}
 
 	getAllPieces() {		//restituisce tutti i pezzi presenti sulla scacchiera
@@ -177,6 +180,46 @@ class Scacchiera {
 		return trovato;
 	}
 
+	controlloStallo () {
+		let mossaTrovata = false;
+
+		if (this.turnoBianco) {
+			this.pezziBianco.every(function(target){
+				let mosse = target.calcolaMossePossibili();
+				if (mosse.length !== 0) {
+					mossaTrovata = true;
+
+					mosse.forEach()
+					let objX = target.x;
+					let objY = target.y;
+					target.move(value[0], value[1]);
+					$("td:eq(" + (objX + 8 * objY) + ")").html("");
+					visualizza(target);
+					if (Scacchiera.controlloScacco()) {
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
+						obj.move(objX, objY);
+						visualizza(obj);
+					} else {
+						obj.move(objX, objY);
+						visualizza(obj);
+					}
+					return false;
+				}
+				return true;
+			});
+		}
+		else {
+			this.pezziNero.every(function(target){
+				if (target.calcolaMossePossibili().length !== 0) {
+					mossaTrovata = true;
+					return false;
+				}
+				return true;
+			});
+		}
+
+		return !mossaTrovata;
+	}
 
 	//aggiorna la logica di gioco
 	tick() {
@@ -321,6 +364,10 @@ class Scacchiera {
 				});
 			}
 		});
-		Scacchiera.controlloScacco();
+		Scacchiera.scacco = Scacchiera.controlloScacco();
+		Scacchiera.stallo = Scacchiera.controlloStallo();
+
+		if (Scacchiera.stallo && Scacchiera.scacco) alert("Scacco matto");
+		else if (Scacchiera.stallo && !Scacchiera.scacco) alert("Stallo");
 	}
 }
