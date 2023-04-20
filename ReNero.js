@@ -1,6 +1,6 @@
 class ReNero extends PezzoNero {
     immagine = "immagini/black_king.svg";
-    arroccoPossibile = true;
+    arroccoPossibile = false;
 
     calcolaMossePossibili(Scacchiera) {
         let Pezzo = this;

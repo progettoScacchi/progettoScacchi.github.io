@@ -35,7 +35,7 @@ class Scacchiera {
 	}
 
 	generaIniziale() {							//genera la disposizione iniziale
-		this.reBianco = new ReBianco(0, 7);
+		this.reBianco = new ReBianco(0, 6);
 		this.reNero = new ReNero(7, 7);
 
 		//genera pezzi bianchi
@@ -67,7 +67,7 @@ class Scacchiera {
 		}
 		*/
 
-		this.spawn(new ReginaBianco(5, 0));
+		this.spawn(new ReginaNero(1, 0));
 
 		this.spawn(this.reNero);
 		this.spawn(this.reBianco);
@@ -181,38 +181,50 @@ class Scacchiera {
 	}
 
 	controlloStallo () {
+		let Scacchiera = this;
 		let mossaTrovata = false;
 
 		if (this.turnoBianco) {
 			this.pezziBianco.every(function(target){
 				let mosse = target.calcolaMossePossibili();
 				if (mosse.length !== 0) {
-					mossaTrovata = true;
-
-					mosse.forEach()
-					let objX = target.x;
-					let objY = target.y;
-					target.move(value[0], value[1]);
-					$("td:eq(" + (objX + 8 * objY) + ")").html("");
-					visualizza(target);
-					if (Scacchiera.controlloScacco()) {
+					mosse.every(function (value) {
+						let objX = target.x;
+						let objY = target.y;
+						target.move(value[0], value[1]);
+						$("td:eq(" + (objX + 8 * objY) + ")").html("");
+						visualizza(target);
+						if (!Scacchiera.controlloScacco()) {
+							mossaTrovata = true;
+						}
 						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
-						obj.move(objX, objY);
-						visualizza(obj);
-					} else {
-						obj.move(objX, objY);
-						visualizza(obj);
-					}
-					return false;
+						target.move(objX, objY);
+						visualizza(target);
+						return !mossaTrovata;
+					})
 				}
 				return true;
 			});
 		}
 		else {
 			this.pezziNero.every(function(target){
-				if (target.calcolaMossePossibili().length !== 0) {
-					mossaTrovata = true;
-					return false;
+				let mosse = target.calcolaMossePossibili();
+				if (mosse.length !== 0) {
+					mosse.every(function (value) {
+						let objX = target.x;
+						let objY = target.y;
+						target.move(value[0], value[1]);
+						$("td:eq(" + (objX + 8 * objY) + ")").html("");
+						visualizza(target);
+						if (!Scacchiera.controlloScacco()) {
+							mossaTrovata = true;
+							$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
+						}
+
+						target.move(objX, objY);
+						visualizza(target);
+						return !mossaTrovata;
+					})
 				}
 				return true;
 			});
@@ -228,6 +240,12 @@ class Scacchiera {
 		let obj = null;
 		let classe;
 		let mosse = [];
+
+		Scacchiera.scacco = Scacchiera.controlloScacco();
+		Scacchiera.stallo = Scacchiera.controlloStallo();
+
+		if (Scacchiera.stallo && Scacchiera.scacco) console.log("Scacco matto");
+		else if (Scacchiera.stallo && !Scacchiera.scacco) console.log("Stallo");
 
 		//quando si clicca sull'immagine succedono cose
 		if (Scacchiera.turnoBianco) classe = "bianco";
@@ -364,10 +382,8 @@ class Scacchiera {
 				});
 			}
 		});
-		Scacchiera.scacco = Scacchiera.controlloScacco();
-		Scacchiera.stallo = Scacchiera.controlloStallo();
 
-		if (Scacchiera.stallo && Scacchiera.scacco) alert("Scacco matto");
-		else if (Scacchiera.stallo && !Scacchiera.scacco) alert("Stallo");
+
+
 	}
 }
