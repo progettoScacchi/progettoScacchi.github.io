@@ -1,6 +1,6 @@
 class ReBianco extends PezzoBianco {
     immagine = "immagini/white_king.svg";
-    arroccoPossibile = true;
+    arroccoPossibile = false;
 
     calcolaMossePossibili(Scacchiera) {
         let Pezzo = this;
