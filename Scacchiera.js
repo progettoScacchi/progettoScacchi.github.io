@@ -13,7 +13,6 @@ class Scacchiera {
 
 		this.stallo = false;
 		this.scacco = false;
-		this.scaccoMatto = false;
 	}
 
 	spawn(pezzo) {						//crea un pezzo
@@ -36,7 +35,7 @@ class Scacchiera {
 
 	generaIniziale() {							//genera la disposizione iniziale
 		this.reBianco = new ReBianco(0, 6);
-		this.reNero = new ReNero(7, 7);
+		this.reNero = new ReNero(0, 0);
 
 		//genera pezzi bianchi
 		/*
@@ -67,7 +66,8 @@ class Scacchiera {
 		}
 		*/
 
-		this.spawn(new ReginaNero(1, 0));
+		this.spawn(new ReginaNero(3, 0));
+		this.spawn(new ReginaNero(4, 0));
 
 		this.spawn(this.reNero);
 		this.spawn(this.reBianco);
@@ -81,7 +81,7 @@ class Scacchiera {
 		return this.eliminatiBianco.concat(this.eliminatiNero);
 	}
 
-	controlloScacco() {
+	controlloScacco(gen) {
 		let Scacchiera = this;
 		let trovato = false;		//controllo se ho trovato una mossa che ci rende in scacco
 
@@ -114,16 +114,13 @@ class Scacchiera {
 				let mosse = value.calcolaMossePossibili(Scacchiera);
 				mosse.every(function (value) {
 					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) {
-						$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
 						trovato = true;
 						return false;
 					}
 					if (Scacchiera.reBianco.y === 7 && Scacchiera.reBianco.arroccoPossibile) {
 						if (Scacchiera.reBianco.x === 6 && torreDx) {
 							if (value[0] === 5 && value[1] === 7) {
-
 								//62 è la coordinata del Re dopo l'arrocco a destra già calcolata in indice unico
-								$("td:eq(" + (62) + ")").css("backgroundColor", "yellow");
 								trovato = true;
 								return false;
 							}
@@ -132,7 +129,6 @@ class Scacchiera {
 
 							if (value[0] === 3 && value[1] === 7) {
 								//58 è la coordinata del Re dopo l'arrocco a sinistra già calcolata in indice unico
-								$("td:eq(" + (58) + ")").css("backgroundColor", "yellow");
 								trovato = true;
 								return false;
 							}
@@ -143,6 +139,7 @@ class Scacchiera {
 				return !trovato;
 			});
 			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
+			if (gen && trovato) $("td:eq(" + (this.reBianco.x + 8*this.reBianco.y) + ")").css("backgroundColor", "yellow");
 		}
 
 		else {
@@ -167,7 +164,7 @@ class Scacchiera {
 				let mosse = target.calcolaMossePossibili(Scacchiera);
 				mosse.every(function (value) {
 					if (value[0] === Scacchiera.reNero.x && value[1] === Scacchiera.reNero.y) {
-						$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
+						//$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
 						trovato = true;
 						return false;
 					}
@@ -176,6 +173,7 @@ class Scacchiera {
 				return !trovato;
 			});
 			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
+			if (gen && trovato) $("td:eq(" + (this.reNero.x + 8*this.reNero.y) + ")").css("backgroundColor", "yellow");
 		}
 		return trovato;
 	}
@@ -183,6 +181,7 @@ class Scacchiera {
 	controlloStallo () {
 		let Scacchiera = this;
 		let mossaTrovata = false;
+		let casellaMossa
 
 		if (this.turnoBianco) {
 			this.pezziBianco.every(function(target){
@@ -191,15 +190,20 @@ class Scacchiera {
 					mosse.every(function (value) {
 						let objX = target.x;
 						let objY = target.y;
+
+						casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();
+
 						target.move(value[0], value[1]);
 						$("td:eq(" + (objX + 8 * objY) + ")").html("");
 						visualizza(target);
+
 						if (!Scacchiera.controlloScacco()) {
 							mossaTrovata = true;
 						}
-						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
+
 						target.move(objX, objY);
 						visualizza(target);
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
 						return !mossaTrovata;
 					})
 				}
@@ -213,15 +217,16 @@ class Scacchiera {
 					mosse.every(function (value) {
 						let objX = target.x;
 						let objY = target.y;
+
+						casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();
 						target.move(value[0], value[1]);
 						$("td:eq(" + (objX + 8 * objY) + ")").html("");
 						visualizza(target);
 						if (!Scacchiera.controlloScacco()) {
 							mossaTrovata = true;
-							$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
 						}
-
 						target.move(objX, objY);
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
 						visualizza(target);
 						return !mossaTrovata;
 					})
@@ -241,11 +246,13 @@ class Scacchiera {
 		let classe;
 		let mosse = [];
 
-		Scacchiera.scacco = Scacchiera.controlloScacco();
+		Scacchiera.scacco = Scacchiera.controlloScacco(true);
 		Scacchiera.stallo = Scacchiera.controlloStallo();
 
-		if (Scacchiera.stallo && Scacchiera.scacco) console.log("Scacco matto");
-		else if (Scacchiera.stallo && !Scacchiera.scacco) console.log("Stallo");
+		if (Scacchiera.stallo) {
+			if (Scacchiera.scacco) console.log("Scacco matto");
+			else console.log("Stallo");
+		}
 
 		//quando si clicca sull'immagine succedono cose
 		if (Scacchiera.turnoBianco) classe = "bianco";
@@ -291,7 +298,7 @@ class Scacchiera {
 					obj.move(value[0], value[1]);
 					$("td:eq(" + (objX + 8*objY) + ")").html("");
 					visualizza(obj);
-					if (Scacchiera.controlloScacco()) {
+					if (Scacchiera.controlloScacco(false)) {
 						$("td:eq(" + (value[0] + 8*value[1]) + ")").html("");
 						obj.move(objX, objY);
 						visualizza(obj);
