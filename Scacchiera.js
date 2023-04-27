@@ -66,8 +66,7 @@ class Scacchiera {
 		}
 		*/
 
-		this.spawn(new ReginaNero(3, 0));
-		this.spawn(new ReginaNero(4, 0));
+		this.spawn(new PedoneBianco(7, 1));
 
 		this.spawn(this.reNero);
 		this.spawn(this.reBianco);
