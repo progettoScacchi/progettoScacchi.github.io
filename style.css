@@ -1,10 +1,15 @@
 body {
 	background-image: url("immagini/tavolo-texture.jpg");
+	background-repeat: no-repeat;
+	background-size: 1920px,1080px;
 }
 
 #bordoScacchiera {
 	background-image: url("immagini/wood-texture.jpg");
+	background-size: 1920px,1080px;
+	background-position: center;
 	margin: auto;
+	
 	margin-top: 100px;
 	width: 640px;
 	padding: 30px;
@@ -15,7 +20,10 @@ body {
 
 table{
 	margin: auto;
+	border: 5px;
 	border-collapse: collapse;
+	border-style: solid;
+  	border-color: rgb(230, 230, 230);
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
 
