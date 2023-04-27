@@ -27,7 +27,6 @@ table{
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
 
-
 td {
 	border-collapse: collapse;
 	width: 80px;
@@ -93,10 +92,6 @@ img{
 
 }
 
-
-
-
-
 #eliminatinero {
 	float: left;
 }
@@ -107,4 +102,17 @@ img{
 
 ul{
 	list-style-type: none;
+}
+
+#listaPedoneBianco {
+	padding: 0;
+	background-color: rgba(0,0,0,0.4);
+	border-radius: 10px;
+	display: none;
+	width: 292px;
+	margin: auto;
+}
+
+#listaPedoneBianco li {
+	display: inline-block;
 }
