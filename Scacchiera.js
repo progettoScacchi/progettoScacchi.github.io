@@ -258,7 +258,7 @@ class Scacchiera {
 		else classe = "nero";
 
 		$(".img"+ classe).one("click", function  () {
-			$("td").css("background-color", "").off("click");
+			$("td").removeClass("mosse").off("click");
 			$("td").removeClass("selezionato").off("click");
 
 			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle (puntatore.caselle) ed estrapolo le coordinate
@@ -305,10 +305,10 @@ class Scacchiera {
 					else {
 						obj.move(objX, objY);
 						visualizza(obj);
-						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("").css("backgroundColor", "red").one("click", function () {
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("").addClass("mosse").one("click", function () {
 							obj.move(value[0], value[1]);
 
-							//si muove il pezzo scelto nella casella scelta
+							//si muove il pezzo scelto nella casella scelta	
 							if (Scacchiera.turnoBianco) {
 								Scacchiera.pezziNero.forEach(function (value) {
 									if (value.x === obj.x && value.y === obj.y) Scacchiera.delete(value);
@@ -367,6 +367,7 @@ class Scacchiera {
 								}
 							}
 
+							
 
 							//aggiorniamo i controlli
 							if (obj instanceof PedoneBianco || obj instanceof PedoneNero) {
@@ -379,11 +380,13 @@ class Scacchiera {
 
 							$("td").css("backgroundColor", "").off("click");
 							$("td").removeClass("selezionato").off("click");
+							$("td").removeClass("mosse").off("click");
 
 							//cambia il turno
 							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
 							gira();
 						});
+							
 					}
 				});
 			}

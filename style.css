@@ -16,7 +16,6 @@ body {
 table{
 	margin: auto;
 	border-collapse: collapse;
-	border-radius: 20px;
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
 
@@ -41,7 +40,7 @@ tr {
 }
 
 .nero{
-  background-color: rgba(150, 75, 0, 0.4);
+  background-color: rgba(150, 75, 0, 0.5);
 }
 
 img{
@@ -52,40 +51,30 @@ img{
 	padding: 0;
 }
 
-#topLeft {
-	border-radius: 20px 0 0 0;
-}
-
-#topRight{
-	border-radius: 0 20px 0 0;
-}
-
-#bottomLeft {
-	border-radius: 0 0 20px 0;
-}
-
-#bottomRight {
-	border-radius: 0 0 0 20px;
-}
-
-
 
 .selezionato{
-
-	border-radius: 50%;
-	background-color: rgba(255, 255, 255, 0.5);
-	width: 50px;
-	height: 50px;
 	
+	/*background-color: rgba(255, 255, 255, 0.5);*/
+	background-image:  url("immagini/selezione.png") ;
+	background-size: 160px;
+	background-repeat: no-repeat;
+   	background-position: center;	
 }
 
 .mosse {
-
+	/*background-color: rgb(25, 230, 103);*/
+	background: url("immagini/mosse.png");
+	background-size: 160px;
+	background-repeat: no-repeat;
+   	background-position: center;	
 }
 
 
 .scacco {
-
+	background: url("immagini/check.png");
+	background-size: 160px;
+	background-repeat: no-repeat;
+   	background-position: center;
 }
 
 .scaccomatto {
