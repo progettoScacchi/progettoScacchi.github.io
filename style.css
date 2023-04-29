@@ -22,8 +22,9 @@ table{
 	margin: auto;
 	border: 5px;
 	border-collapse: collapse;
-	border-style: solid;
-  	border-color: rgb(230, 230, 230);
+	
+	/*border-style: solid;
+  	border-color: rgb(230, 230, 230);*/
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
 
@@ -43,7 +44,7 @@ tr {
 }
 
 .bianco{
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgb(244, 235, 216;
 }
 
 .nero{
@@ -69,8 +70,7 @@ img{
 }
 
 .mosse {
-	/*background-color: rgb(25, 230, 103);*/
-	background: url("immagini/mosse.png");
+	background-image: url("immagini/mosse.png");
 	background-size: 160px;
 	background-repeat: no-repeat;
    	background-position: center;	
@@ -78,7 +78,7 @@ img{
 
 
 .scacco {
-	background: url("immagini/check.png");
+	background-image: url("immagini/check.png");
 	background-size: 160px;
 	background-repeat: no-repeat;
    	background-position: center;
