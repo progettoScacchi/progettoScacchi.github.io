@@ -22,11 +22,17 @@ function loop() {
 }
 
 function visualizza(value) {	//questa funzione si occupa di visualizzare un solo pezzo (target)
-    s.caselle[value.x + 8 * value.y].innerHTML = '<img src=' + value.immagine + " class= img"+value.colore+ ">";
+    let colore;
+    if (value instanceof PezzoBianco) colore = "bianco";
+    else colore = "nero";
+    s.caselle[value.x + 8 * value.y].innerHTML = '<img src=' + value.immagine + " class= img"+colore+ ">";
 }
 
 function visualizzaEliminati(value) {   //questa funzione si occupa di visualizzare i pezzi eliminati nel rispettivo div
-    $("#eliminati" + value.colore).append('<li><img src=' + value.immagine + "></li>");
+    let colore;
+    if (value instanceof PezzoBianco) colore = "bianco";
+    else colore = "nero";
+    $("#eliminati" + colore).append('<li><img src=' + value.immagine + "></li>");
 }
 
 function gira() {

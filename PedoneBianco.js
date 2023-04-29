@@ -1,39 +1,39 @@
 class PedoneBianco extends PezzoBianco {
     immagine = "immagini/white_pawn.svg";
-    hasMoved = false;
-    enPassantPossibile = false;
+    hasMoved = false;   //controlla se il pedone è stato mosso
+    enPassantPossibile = false; //controlla se il pedone sia catturabile con un en Passant
 
     calcolaMossePossibili(Scacchiera) {
         let Pezzo = this;	//puntatore al pezzo
-        let occupato = [false, false, false, false, false, false];
-
         let mossePossibili = [];
 
+        /*
         //controlla se le caselle possibili sono occupate
         Scacchiera.getAllPieces().forEach(function (value) {
-            if (value.y === Pezzo.y - 1 && value.x === Pezzo.x) occupato[0] = true;
-            if (value.y === Pezzo.y - 2 && value.x === Pezzo.x) occupato[1] = true;
-            if (value.y === Pezzo.y - 1 && value.x === Pezzo.x - 1 && value.colore === "nero") occupato[2] = true;
-            if (value.y === Pezzo.y - 1 && value.x === Pezzo.x + 1 && value.colore === "nero") occupato[3] = true;
             if (value.y === Pezzo.y && value.x === Pezzo.x - 1 && value instanceof PedoneNero && value.enPassantPossibile) occupato[4] = true;
             if (value.y === Pezzo.y && value.x === Pezzo.x + 1 && value instanceof PedoneNero && value.enPassantPossibile) occupato[5] = true;
         });
+        */
 
-        //una cella avanti
-        if (Pezzo.y !== 0) {
-            if (!occupato[0]) {
-                mossePossibili.push([this.x, this.y - 1]);
+        if ($("td:eq(" + (Pezzo.x + 8 * (Pezzo.y-1)) + ")").html() === "") {    //controlla se è presente un pezzo nella casella sopra
+            mossePossibili.push([this.x, this.y - 1]);  //se non è presente inserisce la mossa nel vettore
 
-                //due celle avanti
-                if (!occupato[1] && !Pezzo.hasMoved)mossePossibili.push([this.x, this.y - 2]);
+            if ($("td:eq(" + (Pezzo.x + 8 * (Pezzo.y-2)) + ")").html() === "" && !Pezzo.hasMoved) { //controlla se è presente un pezzo due caselle sopra ma solo se il pedone non è ancora stato mosso
+                mossePossibili.push([this.x, this.y - 2]);  //se non è presente inserisce la mossa nel vettore
             }
-
-            //diagonale a sinistra ed en passant a sinistra
-            if (occupato[2] || occupato[4]) mossePossibili.push([this.x - 1, this.y - 1]);
-
-            //diagonale a destra ed en passant a destra
-            if (occupato[3] || occupato[5]) mossePossibili.push([this.x + 1, this.y - 1]);
         }
+
+        if ($("td:eq(" + (Pezzo.x-1 + 8 * (Pezzo.y-1)) + ")").html().search("black") !== -1) { //controlla se è presente un pezzo nero in alto a sinistra
+            mossePossibili.push([this.x - 1, this.y - 1]); //se è presente inserisce la mossa nel vettore
+        }
+
+        if ($("td:eq(" + (Pezzo.x+1 + 8 * (Pezzo.y-1)) + ")").html().search("black") !== -1) {   //controlla se è presente un pezzo nero in alto a destra
+            mossePossibili.push([this.x + 1, this.y - 1]); //se è presente inserisce la mossa nel vettore
+        }
+
+
+
+
 
         return mossePossibili;
     }

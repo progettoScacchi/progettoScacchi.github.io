@@ -17,14 +17,14 @@ class Scacchiera {
 	}
 
 	spawn(pezzo) {						//crea un pezzo
-		if (pezzo.colore === 'bianco') this.pezziBianco.push(pezzo);
+		if (pezzo instanceof PezzoBianco) this.pezziBianco.push(pezzo);
 		else this.pezziNero.push(pezzo);
 	}
 
 	delete(pezzo) {
 		let Scacchiera = this;
 		//elimina un pezzo
-		if (pezzo.colore === 'bianco') {
+		if (pezzo instanceof PezzoBianco) {
 			Scacchiera.pezziBianco.splice(Scacchiera.pezziBianco.indexOf(pezzo), 1);
 			Scacchiera.eliminatiBianco.push(pezzo);
 		}
@@ -68,6 +68,7 @@ class Scacchiera {
 		*/
 
 		this.spawn(new PedoneBianco(7, 2));
+		this.spawn(new PedoneNero(6, 1))
 
 		this.spawn(this.reNero);
 		this.spawn(this.reBianco);
@@ -79,6 +80,14 @@ class Scacchiera {
 
 	getEliminati() {
 		return this.eliminatiBianco.concat(this.eliminatiNero);
+	}
+
+	getPezzoBianco(posX, posY) {
+
+	}
+
+	getPezzoNero(posX, posY) {
+
 	}
 
 	controlloScacco(gen) {
@@ -260,6 +269,7 @@ class Scacchiera {
 		else if (Scacchiera.turnoNero) classe = "nero";
 
 		$(".img"+ classe).one("click", function  () {
+			$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse");
 
 			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle (puntatore.caselle) ed estrapolo le coordinate
 			let indiceVettore = Array.prototype.indexOf.call(Scacchiera.caselle, this.parentNode);
@@ -287,7 +297,7 @@ class Scacchiera {
 			$("td:eq("+ indiceVettore +")").addClass("selezionato"); 
 
 			//calcola e visualizza le mosse possibili del pezzo selezionato
-			if ((obj.colore === "bianco" && Scacchiera.turnoBianco) || (obj.colore === "nero" && !Scacchiera.turnoBianco)) {
+			if ((obj instanceof PezzoBianco && Scacchiera.turnoBianco) || (obj instanceof PezzoNero && !Scacchiera.turnoBianco)) {
 				mosse = obj.calcolaMossePossibili(Scacchiera);
 
 				mosse.forEach(function (value) {
