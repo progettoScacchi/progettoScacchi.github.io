@@ -2,67 +2,70 @@ class AlfiereBianco extends PezzoBianco {
     immagine = "immagini/white_bishop.svg";
 
     calcolaMossePossibili(Scacchiera) {
-        let Pezzo = this;
         let mossePossibili = [];
 
-        let mossaX = Pezzo.x;
-        let mossaY = Pezzo.y;
+        let mossaX = this.x;        //usiamo due variabili per testare le mosse in diagonale
+        let mossaY = this.y;
 
         //in alto a sinistra
-        while (mossaX > 0 && mossaY > 0) {
-            mossaX--;
+        while (mossaX > 0 && mossaY > 0) { //controlla tutte le celle con in alto a sinistra dell'alfiere
+            mossaX--; //decrementa x e y
             mossaY--;
-            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
-            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+
+            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);    //se la cella è vuota aggiunge la mossa
+            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) { //se nella cella è presente un pezzo nero aggiunge la mossa ed esce dal ciclo
                 mossePossibili.push([mossaX, mossaY]);
                 break;
             }
-            else break;
+            else break; //se nella cella è presente un pezzo bianco esce dal ciclo
         }
 
-        mossaX = Pezzo.x;
-        mossaY = Pezzo.y;
+        mossaX = this.x;
+        mossaY = this.y;
 
         //in alto a destra
-        while (mossaX < 7 && mossaY > 0) {
-            mossaX++;
+        while (mossaX < 7 && mossaY > 0) { //controlla tutte le celle con in alto a destra dell'alfiere
+            mossaX++; //incrementa x e decrementa y
             mossaY--;
-            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
-            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+
+            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]); //se la cella è vuota aggiunge la mossa
+            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) { //se nella cella è presente un pezzo nero aggiunge la mossa ed esce dal ciclo
                 mossePossibili.push([mossaX, mossaY]);
                 break;
             }
-            else break;
+            else break; //se nella cella è presente un pezzo bianco esce dal ciclo
         }
 
-        mossaX = Pezzo.x;
-        mossaY = Pezzo.y;
+        mossaX = this.x;
+        mossaY = this.y;
 
         //in basso a destra
-        while (mossaX < 7 && mossaY < 7) {
-            mossaX++;
+        while (mossaX < 7 && mossaY < 7) { //controlla tutte le celle con in basso a destra dell'alfiere
+            mossaX++; //incrementa x e y
             mossaY++;
-            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
-            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+
+            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]); //se la cella è vuota aggiunge la mossa
+            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) { //se nella cella è presente un pezzo nero aggiunge la mossa ed esce dal ciclo
                 mossePossibili.push([mossaX, mossaY]);
                 break;
             }
-            else break;
+            else break; //se nella cella è presente un pezzo bianco esce dal ciclo
         }
 
-        mossaX = Pezzo.x;
-        mossaY = Pezzo.y;
+        mossaX = this.x;
+        mossaY = this.y;
 
         //in basso a sinistra
-        while (mossaX > 0 && mossaY < 7) {
-            mossaX--;
+        while (mossaX > 0 && mossaY < 7) { //controlla tutte le celle con in basso a sinistra dell'alfiere
+            mossaX--; //decrementa x e incrementa y
             mossaY++;
-            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]);
-            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) {
+
+            if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html() === "") mossePossibili.push([mossaX, mossaY]); //se la cella è vuota aggiunge la mossa
+            else if ($("td:eq(" + (mossaX + 8 * mossaY ) + ")").html().search("black") !== -1) { //se nella cella è presente un pezzo nero aggiunge la mossa ed esce dal ciclo
                 mossePossibili.push([mossaX, mossaY]);
                 break;
             }
-            else break;
+            else break; //se nella cella è presente un pezzo bianco esce dal ciclo
         }
 
         return mossePossibili;

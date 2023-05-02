@@ -3,7 +3,6 @@ class Scacchiera {
 		this.caselle = document.getElementsByTagName("td");
 		this.pezziBianco = [];
 		this.pezziNero = [];
-		this.puntatore = document.getElementById("tabScacchiera");
 		this.eliminatiBianco = [];
 		this.eliminatiNero = [];
 		this.turnoBianco = true;
@@ -21,9 +20,9 @@ class Scacchiera {
 		else this.pezziNero.push(pezzo);
 	}
 
-	delete(pezzo) {
+	delete(pezzo) {						//elimina un pezzo
 		let Scacchiera = this;
-		//elimina un pezzo
+
 		if (pezzo instanceof PezzoBianco) {
 			Scacchiera.pezziBianco.splice(Scacchiera.pezziBianco.indexOf(pezzo), 1);
 			Scacchiera.eliminatiBianco.push(pezzo);
@@ -35,8 +34,8 @@ class Scacchiera {
 	}
 
 	generaIniziale() {							//genera la disposizione iniziale
-		this.reBianco = new ReBianco(0, 6);
-		this.reNero = new ReNero(0, 0);
+		this.reBianco = new ReBianco(4, 7);
+		this.reNero = new ReNero(4, 0);
 
 		//genera pezzi bianchi
 		/*
@@ -67,27 +66,41 @@ class Scacchiera {
 		}
 		*/
 
-		this.spawn(new PedoneBianco(7, 2));
-		this.spawn(new PedoneNero(6, 1))
+		this.spawn(new TorreBianco(7, 7));
+		this.spawn(new TorreBianco(0, 7));
+		this.spawn(new TorreNero(7, 0));
+		this.spawn(new TorreNero(0, 0));
+		this.spawn(new CavalloBianco(1,7));
+		this.spawn(new CavalloBianco(6,7));
+		this.spawn(new CavalloNero(1,0));
+		this.spawn(new CavalloNero(6,0));
 
 		this.spawn(this.reNero);
 		this.spawn(this.reBianco);
 	}
 
-	getAllPieces() {		//restituisce tutti i pezzi presenti sulla scacchiera
-		return this.pezziBianco.concat(this.pezziNero);
-	}
-
-	getEliminati() {
-		return this.eliminatiBianco.concat(this.eliminatiNero);
-	}
-
 	getPezzoBianco(posX, posY) {
-
+		let obj = null;
+		this.pezziBianco.every(function (value) {
+			if (value.x === posX && value.y === posY) {
+				obj = value;
+				return false;
+			}
+			return true;
+		});
+		return obj;
 	}
 
 	getPezzoNero(posX, posY) {
-
+		let obj = null;
+		this.pezziNero.every(function (value) {
+			if (value.x === posX && value.y === posY) {
+				obj = value;
+				return false;
+			}
+			return true;
+		});
+		return obj;
 	}
 
 	controlloScacco(gen) {
@@ -432,7 +445,6 @@ class Scacchiera {
 								Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
 								Scacchiera.turnoNero = !Scacchiera.turnoNero;
 							}
-							//gira();
 						});
 					}
 				});

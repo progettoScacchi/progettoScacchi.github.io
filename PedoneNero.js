@@ -4,36 +4,31 @@ class PedoneNero extends PezzoNero {
     enPassantPossibile = false;
 
     calcolaMossePossibili(Scacchiera) {
-        let Pezzo = this;	//puntatore al pezzo
-        let occupato = [false, false, false, false, false, false];
+        let mossePossibili = [];    //vettore delle mosse possibili
 
-        let mossePossibili = [];
+        if ($("td:eq(" + (this.x + 8 * (this.y + 1)) + ")").html() === "") {    //controlla se è presente un pezzo nella casella sopra
+            mossePossibili.push([this.x, this.y + 1]);  //se non è presente inserisce la mossa nel vettore
 
-        //controlla se le caselle possibili sono occupate
-        Scacchiera.getAllPieces().forEach(function (value) {
-            if (value.y === Pezzo.y + 1 && value.x === Pezzo.x) occupato[0] = true;
-            if (value.y === Pezzo.y + 2 && value.x === Pezzo.x) occupato[1] = true;
-            if (value.y === Pezzo.y + 1 && value.x === Pezzo.x - 1 && value.colore === "bianco") occupato[2] = true;
-            if (value.y === Pezzo.y + 1 && value.x === Pezzo.x + 1 && value.colore === "bianco") occupato[3] = true;
-            if (value.y === Pezzo.y && value.x === Pezzo.x - 1 && value instanceof PedoneBianco && value.enPassantPossibile) occupato[4] = true;
-            if (value.y === Pezzo.y && value.x === Pezzo.x + 1 && value instanceof PedoneBianco && value.enPassantPossibile) occupato[5] = true;
-        });
-
-        //una cella avanti
-        if (Pezzo.y !== 7) {
-            if (!occupato[0]) {
-                mossePossibili.push([this.x, this.y + 1]);
-
-                //due celle avanti
-                if (!occupato[1] && !Pezzo.hasMoved) mossePossibili.push([this.x, this.y + 2]);
+            if ($("td:eq(" + (this.x + 8 * (this.y + 2)) + ")").html() === "" && !this.hasMoved) { //controlla se è presente un pezzo due caselle sopra ma solo se il pedone non è ancora stato mosso
+                mossePossibili.push([this.x, this.y + 2]);  //se non è presente inserisce la mossa nel vettore
             }
-
-            //diagonale a sinistra ed en passant a sinistra
-            if (occupato[2] || occupato[4]) mossePossibili.push([this.x - 1, this.y + 1]);
-
-            //diagonale a destra ed en passant a destra
-            if (occupato[3] || occupato[5]) mossePossibili.push([this.x + 1, this.y + 1]);
         }
+
+        if ($("td:eq(" + (this.x - 1 + 8 * (this.y + 1)) + ")").html().search("white") !== -1) { //controlla se è presente un pezzo bianco in alto a sinistra
+            mossePossibili.push([this.x - 1, this.y + 1]); //se è presente inserisce la mossa nel vettore
+        }
+
+        if ($("td:eq(" + (this.x + 1 + 8 * (this.y + 1)) + ")").html().search("white") !== -1) {   //controlla se è presente un pezzo bianco in alto a destra
+            mossePossibili.push([this.x + 1, this.y + 1]); //se è presente inserisce la mossa nel vettore
+        }
+
+        let diagonale = Scacchiera.getPezzoBianco(this.x - 1, this.y);    //restituisce il pezzo che si trova a sinistra del pedone
+        //se il pezzo è un pedone catturabile con en passant aggiunge la mossa
+        if (diagonale instanceof PedoneBianco && diagonale.enPassantPossibile) mossePossibili.push([this.x - 1, this.y + 1]);
+
+        diagonale = Scacchiera.getPezzoBianco(this.x + 1, this.y);        //restituisce il this che si trova a destra del pedone
+        //se il this è un pedone catturabile con en passant aggiunge la mossa
+        if (diagonale instanceof PedoneBianco && diagonale.enPassantPossibile) mossePossibili.push([this.x + 1, this.y + 1]);
 
         return mossePossibili;
     }
