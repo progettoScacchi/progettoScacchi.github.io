@@ -1,37 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 
 <head>
   <title>Scacchi</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 </head>
 
 <body>
+  <ul id="eliminatinero" class="eliminati"></ul>
+  <ul id="eliminatibianco" class="eliminati"></ul>
+
+  <ul id="listaPedoneBianco">
+    <li><img src="immagini/white_knight.svg" alt="white_knight.svg"></li>
+    <li><img src="immagini/white_queen.svg" alt="white_queen.svg"></li>
+    <li><img src="immagini/white_bishop.svg" alt="white_bishop.svg"></li>
+    <li><img src="immagini/white_rook.svg" alt="white_rook.svg"></li>
+  </ul>
+
   <div id="bordoScacchiera">
     <table id="tabScacchiera">
       <tr>
-        <td class="bianco" id="topLeft"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero" id="topRight"></td>
-      </tr>
-
-      <tr>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-      </tr>
-
-      <tr>
         <td class="bianco"></td>
         <td class="nero"></td>
         <td class="bianco"></td>
@@ -87,25 +76,61 @@
       </tr>
 
       <tr>
-        <td class="nero" id="bottomRight"></td>
+        <td class="nero"></td>
+        <td class="bianco"></td>
+        <td class="nero"></td>
+        <td class="bianco"></td>
+        <td class="nero"></td>
+        <td class="bianco"></td>
+        <td class="nero"></td>
+        <td class="bianco"></td>
+      </tr>
+
+      <tr>
         <td class="bianco"></td>
         <td class="nero"></td>
         <td class="bianco"></td>
         <td class="nero"></td>
         <td class="bianco"></td>
         <td class="nero"></td>
-        <td class="bianco" id="bottomLeft"></td>
+        <td class="bianco"></td>
+        <td class="nero"></td>
+      </tr>
+
+      <tr>
+        <td class="nero"></td>
+        <td class="bianco"></td>
+        <td class="nero"></td>
+        <td class="bianco"></td>
+        <td class="nero"></td>
+        <td class="bianco"></td>
+        <td class="nero"></td>
+        <td class="bianco"></td>
       </tr>
     </table>
+
   </div>
 
   <div id="test">
 
   </div>
 
-
-  <script src="classes.js" type="text/javascript"></script>
+  <script src="Pezzo.js" type="text/javascript"></script>
+  <script src="AlfiereBianco.js" type="text/javascript"></script>
+  <script src="AlfiereNero.js" type="text/javascript"></script>
+  <script src="TorreNero.js" type="text/javascript"></script>
+  <script src="TorreBianco.js" type="text/javascript"></script>
+  <script src="CavalloNero.js" type="text/javascript"></script>
+  <script src="CavalloBianco.js" type="text/javascript"></script>
+  <script src="ReNero.js" type="text/javascript"></script>
+  <script src="ReBianco.js" type="text/javascript"></script>
+  <script src="PedoneBianco.js" type="text/javascript"></script>
+  <script src="PedoneNero.js" type="text/javascript"></script>
+  <script src="ReginaNero.js" type="text/javascript"></script>
+  <script src="ReginaBianco.js" type="text/javascript"></script>
+  <script src="Scacchiera.js" type="text/javascript"></script>
   <script src="script.js" type="text/javascript"></script>
+
 </body>
 
 </html>

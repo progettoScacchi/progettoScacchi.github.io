@@ -1,15 +1,15 @@
-@keyframes giraScacchiera {
-	0%{transform: rotateX(0deg);}
-	100%{transform: rotateX(180deg);}
-}
-
 body {
 	background-image: url("immagini/tavolo-texture.jpg");
+	background-repeat: no-repeat;
+	background-size: 1920px,1080px;
 }
 
 #bordoScacchiera {
 	background-image: url("immagini/wood-texture.jpg");
+	background-size: 1920px,1080px;
+	background-position: center;
 	margin: auto;
+	
 	margin-top: 100px;
 	width: 640px;
 	padding: 30px;
@@ -19,52 +19,100 @@ body {
 }
 
 table{
-  margin: auto;
-  border-collapse: collapse;
-
-	border-radius: 20px;
+	margin: auto;
+	border: 5px;
+	border-collapse: collapse;
+	
+	/*border-style: solid;
+  	border-color: rgb(230, 230, 230);*/
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
 
-td{
-  border-collapse: collapse;
-  width: 80px;
-  height: 80px;
-	min-width: 80px;
-	max-width: 80px;
-	min-height: 80px;
-	max-height: 80px;
+td {
+	border-collapse: collapse;
+	width: 80px;
+	height: 80px;
+	margin: 0;
+	padding: 0;
+}
+
+
+tr {
+	border-collapse: collapse;
 	margin: 0;
 	padding: 0;
 }
 
 .bianco{
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgb(244, 235, 216;
 }
 
 .nero{
-  background-color: rgba(150, 75, 0, 0.4);
+  background-color: rgba(150, 75, 0, 0.5);
 }
 
 img{
-  height: 80px;
-	width: 80px;
-	margin: 0;
+	display: block;
+	margin: auto;
+	height: 70px;
+	width: 70px;
 	padding: 0;
 }
 
-#topLeft {
-	border-radius: 20px 0 0 0;
+
+.selezionato{
+	
+	/*background-color: rgba(255, 255, 255, 0.5);*/
+	background-image:  url("immagini/selezione.png") ;
+	background-size: 160px;
+	background-repeat: no-repeat;
+   	background-position: center;	
 }
 
-#topRight{
-	border-radius: 0 20px 0 0;
+.mosse {
+	background-image: url("immagini/mosse.png");
+	background-size: 160px;
+	background-repeat: no-repeat;
+   	background-position: center;	
 }
 
-#bottomLeft {
-	border-radius: 0 0 20px 0;
+
+.scacco {
+	background-image: url("immagini/check.png");
+	background-size: 160px;
+	background-repeat: no-repeat;
+   	background-position: center;
 }
 
-#bottomRight {
-	border-radius: 0 0 0 20px;
+.scaccomatto {
+
+}
+
+.stallo{
+
+}
+
+#eliminatinero {
+	float: left;
+}
+
+#eliminatibianco {
+	float: right;
+}
+
+ul{
+	list-style-type: none;
+}
+
+#listaPedoneBianco {
+	padding: 0;
+	background-color: rgba(0,0,0,0.4);
+	border-radius: 10px;
+	display: none;
+	width: 292px;
+	margin: auto;
+}
+
+#listaPedoneBianco li {
+	display: inline-block;
 }
