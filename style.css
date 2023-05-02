@@ -5,17 +5,32 @@ body {
 }
 
 #bordoScacchiera {
+
 	background-image: url("immagini/wood-texture.jpg");
-	background-size: 1920px,1080px;
+	/*background-size: 1920px,1080px;*/
 	background-position: center;
+
 	margin: auto;
-	
 	margin-top: 100px;
+	
+	
+	border: 30px solid transparent;
+	border-image: url("immagini/bordo.png") 100 stretch;
+
+	
+
 	width: 640px;
-	padding: 30px;
-	border-radius: 20px;
+	padding: 0px;
+	
 	box-shadow: 0 0 25px 5px rgba(0,0,0, 0.8);
 	/*transform: rotateX(45deg);*/
+
+	animation: fadein 2s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 table{
