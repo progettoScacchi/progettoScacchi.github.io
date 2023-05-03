@@ -419,6 +419,7 @@ class Scacchiera {
 									return true;
 								});
 							}
+<<<<<<< HEAD
 							if (obj.x === 2 && obj.y === 0) {
 								Scacchiera.pezziNero.every(function (value) {
 									if (value.x === 0 && value.y === 0) {
@@ -427,6 +428,17 @@ class Scacchiera {
 									}
 									return true;
 								});
+=======
+
+							
+							$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").off("click");
+							$.playSound('movimento_mossa.mp3');
+
+							//cambia il turno
+							if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
+								Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
+								Scacchiera.turnoNero = !Scacchiera.turnoNero;
+>>>>>>> 33e0d502dfe2d64a53929862b917da3ff34e13c5
 							}
 						}
 						//aggiorniamo i controlli
