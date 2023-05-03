@@ -438,7 +438,9 @@ class Scacchiera {
 								obj.arroccoPossibile = false;
 							}
 
+							
 							$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").off("click");
+							$.playSound('movimento_mossa.mp3');
 
 							//cambia il turno
 							if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
