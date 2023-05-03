@@ -1,131 +1,46 @@
 <!DOCTYPE html>
 <html lang="it">
+  <head>
+    <title>Scacchi</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />  <!--collegamento al css-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>  <!--collegamento a JQuery-->
+  </head>
 
-<head>
-  <title>Scacchi</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-</head>
+  <body>
+    <ul id="eliminatinero" class="eliminati"></ul>  <!--lista degli eliminati del nero-->
+    <ul id="eliminatibianco" class="eliminati"></ul>  <!--lista degli eliminati del bianco-->
 
-<body>
-  <ul id="eliminatinero" class="eliminati"></ul>
-  <ul id="eliminatibianco" class="eliminati"></ul>
+    <ul id="listaPedoneBianco">   <!--Lista per il potenziamento del pedone bianco (di norma nascosta)-->
+      <li><img src="immagini/white_knight.svg" alt="white_knight.svg"></li>
+      <li><img src="immagini/white_queen.svg" alt="white_queen.svg"></li>
+      <li><img src="immagini/white_bishop.svg" alt="white_bishop.svg"></li>
+      <li><img src="immagini/white_rook.svg" alt="white_rook.svg"></li>
+    </ul>
 
-  <ul id="listaPedoneBianco">
-    <li><img src="immagini/white_knight.svg" alt="white_knight.svg"></li>
-    <li><img src="immagini/white_queen.svg" alt="white_queen.svg"></li>
-    <li><img src="immagini/white_bishop.svg" alt="white_bishop.svg"></li>
-    <li><img src="immagini/white_rook.svg" alt="white_rook.svg"></li>
-  </ul>
+    <div id="spazioDiGioco"></div>  <!--Qui si posiziona la scacchiera di gioco-->
 
-  <div id="bordoScacchiera">
-    <table id="tabScacchiera">
-      <tr>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-      </tr>
+    <ul id="listaPedoneNero">     <!--Lista per il potenziamento del pedone nero (di norma nascosta)-->
+      <li><img src="immagini/black_knight.svg" alt="black_knight.svg"></li>
+      <li><img src="immagini/black_queen.svg" alt="black_queen.svg"></li>
+      <li><img src="immagini/black_bishop.svg" alt="black_bishop.svg"></li>
+      <li><img src="immagini/black_rook.svg" alt="black_rook.svg"></li>
+    </ul>
 
-      <tr>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-      </tr>
-
-      <tr>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-      </tr>
-
-      <tr>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-      </tr>
-
-      <tr>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-      </tr>
-
-      <tr>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-      </tr>
-
-      <tr>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-      </tr>
-
-      <tr>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-        <td class="nero"></td>
-        <td class="bianco"></td>
-      </tr>
-    </table>
-  </div>
-
-  <script src="classi/Pezzo.js" type="text/javascript"></script>
-  <script src="classi/AlfiereBianco.js" type="text/javascript"></script>
-  <script src="classi/AlfiereNero.js" type="text/javascript"></script>
-  <script src="classi/TorreNero.js" type="text/javascript"></script>
-  <script src="classi/TorreBianco.js" type="text/javascript"></script>
-  <script src="classi/CavalloNero.js" type="text/javascript"></script>
-  <script src="classi/CavalloBianco.js" type="text/javascript"></script>
-  <script src="classi/ReNero.js" type="text/javascript"></script>
-  <script src="classi/ReBianco.js" type="text/javascript"></script>
-  <script src="classi/PedoneBianco.js" type="text/javascript"></script>
-  <script src="classi/PedoneNero.js" type="text/javascript"></script>
-  <script src="classi/ReginaNero.js" type="text/javascript"></script>
-  <script src="classi/ReginaBianco.js" type="text/javascript"></script>
-  <script src="classi/Scacchiera.js" type="text/javascript"></script>
-  <script src="script.js" type="text/javascript"></script>
-
-</body>
-
+    <!--collegamento agli script di ogni classe e allo script principale-->
+    <script src="classi/Pezzo.js" type="text/javascript"></script>
+    <script src="classi/AlfiereBianco.js" type="text/javascript"></script>
+    <script src="classi/AlfiereNero.js" type="text/javascript"></script>
+    <script src="classi/TorreNero.js" type="text/javascript"></script>
+    <script src="classi/TorreBianco.js" type="text/javascript"></script>
+    <script src="classi/CavalloNero.js" type="text/javascript"></script>
+    <script src="classi/CavalloBianco.js" type="text/javascript"></script>
+    <script src="classi/ReNero.js" type="text/javascript"></script>
+    <script src="classi/ReBianco.js" type="text/javascript"></script>
+    <script src="classi/PedoneBianco.js" type="text/javascript"></script>
+    <script src="classi/PedoneNero.js" type="text/javascript"></script>
+    <script src="classi/ReginaNero.js" type="text/javascript"></script>
+    <script src="classi/ReginaBianco.js" type="text/javascript"></script>
+    <script src="classi/Scacchiera.js" type="text/javascript"></script>
+    <script src="script.js" type="text/javascript"></script>
+  </body>
 </html>

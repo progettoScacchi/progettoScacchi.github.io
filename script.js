@@ -1,4 +1,4 @@
-let scacchiera = new Scacchiera();	//crea la scacchiera
+let scacchiera = new Scacchiera();	//crea l'oggetto scacchiera
 scacchiera.generaIniziale();    //genera la configurazione iniziale della partita
 $("#tabScacchiera").click(loop);  //aggiunge un gestore dell'evento click sulla scacchiera
 
