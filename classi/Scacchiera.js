@@ -54,8 +54,9 @@ class Scacchiera {
 
 	generaIniziale() {							//genera la disposizione iniziale
 		this.reBianco = new ReBianco(4, 7);
-		this.reNero = new ReNero(4, 0);
+		this.reNero = new ReNero(6, 0);
 
+		/*
 		//genera i pezzi bianchi
 		this.spawn(new TorreBianco(0, 7));
 		this.spawn(new CavalloBianco(1, 7));
@@ -81,7 +82,11 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneNero(i, 1));
 		}
+		*/
 
+		this.spawn(this.reBianco);
+		this.spawn(this.reNero);
+		this.spawn(new PedoneBianco(7, 2))
 	}
 
 	//restituisce un pezzo bianco date le coordinate
@@ -335,32 +340,36 @@ class Scacchiera {
 					obj.move(objX, objY);	//lo sposta di nuovo nella posizione originale
 					visualizza(obj);	//lo visualizza nella posizione originale
 
+					//per lo stile: aggiunge una classe diversa se la mossa è una cattura o un movimento
 					if (Scacchiera.getPezzoNero(value[0], value[1]) || Scacchiera.getPezzoBianco(value[0], value[1])) $("td:eq(" + (value[0] + 8 * value[1]) + ")").addClass("mangia");
 					else $("td:eq(" + (value[0] + 8 * value[1]) + ")").addClass("mosse");
 
-					$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("").one("click", function () {
+					//click su una delle mosse possibili
+					$("td:eq(" + (value[0] + 8 * value[1]) + ")").one("click", function () {
 						//si muove il pezzo scelto nella casella scelta
 						obj.move(value[0], value[1]);
-						//cattura
+
+						//eliminazione dei pezzi catturati
+						let pezzoEliminato = null;		//pezzo catturato (se esiste)
 						if (Scacchiera.turnoBianco) {
-							Scacchiera.pezziNero.forEach(function (value) {
-								if (value.x === obj.x && value.y === obj.y) Scacchiera.delete(value);
-								else if (value instanceof PedoneNero && value.x === obj.x && value.y === obj.y + 1) Scacchiera.delete(value);
-							});
+							pezzoEliminato = Scacchiera.getPezzoNero(obj.x, obj.y);
 						} else {
-							Scacchiera.pezziBianco.forEach(function (value) {
-								if (value.x === obj.x && value.y === obj.y) Scacchiera.delete(value);
-								else if (value instanceof PedoneBianco && value.x === obj.x && value.y === obj.y - 1) Scacchiera.delete(value);
-							});
+							pezzoEliminato = Scacchiera.getPezzoBianco(obj.x, obj.y)
 						}
+						if (pezzoEliminato) Scacchiera.delete(pezzoEliminato);
+
+						//potenziamento del pedone quando arriva a fondo scacchiera
 						if (obj instanceof PedoneBianco && obj.y === 0) {
-							Scacchiera.turnoBianco = false;
-							$("#listaPedoneBianco").css("display", "block");
-							let pedoneX = obj.x;
+							Scacchiera.turnoBianco = false;	//il gioco si ferma (non è il turno di nessuno: il giocatore deve compiere una scelta)
+
+							$("#listaPedoneBianco").css("display", "block");	//visualizza la lista delle scelte
+
+							//click su una delle scelte
 							$("#listaPedoneBianco > li > img").one("click", function () {
-								Scacchiera.delete(obj);
-								Scacchiera.eliminatiBianco.pop();
-								$("td:eq(" + (pedoneX) + ")").html("");
+								Scacchiera.delete(obj);	//eliminazione del pedone
+								Scacchiera.eliminatiBianco.pop();	//lo rimuove dal vettore degli eliminati
+
+
 								let pezzo = this.src.split("/")[this.src.split("/").length-1][6];
 								switch (pezzo) {
 									case 'b': {
@@ -380,6 +389,7 @@ class Scacchiera {
 										break;
 									}
 								}
+
 								Scacchiera.spawn(obj);
 								visualizza(obj);
 								$("#listaPedoneBianco").css("display", "none");
