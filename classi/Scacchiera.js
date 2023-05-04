@@ -334,7 +334,11 @@ class Scacchiera {
 				else {
 					obj.move(objX, objY);	//lo sposta di nuovo nella posizione originale
 					visualizza(obj);	//lo visualizza nella posizione originale
-					$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("").addClass("mosse").one("click", function () {
+
+					if (Scacchiera.getPezzoNero(value[0], value[1]) || Scacchiera.getPezzoBianco(value[0], value[1])) $("td:eq(" + (value[0] + 8 * value[1]) + ")").addClass("mangia");
+					else $("td:eq(" + (value[0] + 8 * value[1]) + ")").addClass("mosse");
+
+					$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("").one("click", function () {
 						//si muove il pezzo scelto nella casella scelta
 						obj.move(value[0], value[1]);
 						//cattura
@@ -408,6 +412,7 @@ class Scacchiera {
 								});
 							}
 						}
+
 						//arrocco nero
 						if (obj instanceof ReNero && obj.arroccoPossibile) {
 							if (obj.x === 6 && obj.y === 0) {
@@ -419,7 +424,6 @@ class Scacchiera {
 									return true;
 								});
 							}
-<<<<<<< HEAD
 							if (obj.x === 2 && obj.y === 0) {
 								Scacchiera.pezziNero.every(function (value) {
 									if (value.x === 0 && value.y === 0) {
@@ -428,19 +432,9 @@ class Scacchiera {
 									}
 									return true;
 								});
-=======
-
-							
-							$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").off("click");
-							$.playSound('movimento_mossa.mp3');
-
-							//cambia il turno
-							if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
-								Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
-								Scacchiera.turnoNero = !Scacchiera.turnoNero;
->>>>>>> 33e0d502dfe2d64a53929862b917da3ff34e13c5
 							}
 						}
+
 						//aggiorniamo i controlli
 						if (obj instanceof PedoneBianco || obj instanceof PedoneNero) {
 							obj.enPassantPossibile = true;
@@ -449,7 +443,7 @@ class Scacchiera {
 						if (obj instanceof TorreBianco || obj instanceof TorreNero || obj instanceof ReBianco || obj instanceof ReNero) {
 							obj.arroccoPossibile = false;
 						}
-						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").off("click");
+						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
 						//cambia il turno
 						if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
 							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;

@@ -103,9 +103,9 @@ img{
 
 .mangia {
 	background-image: url("immagini/mangia.png");
-	background-size: 160px;
+	background-size: 80px;
 	background-repeat: no-repeat;
-   	background-position: center;	
+	background-position: center;
 }
 
 
@@ -143,12 +143,7 @@ ul{
 	list-style-type: none;
 }
 
-<<<<<<< HEAD
 #listaPedoneBianco, #listaPedoneNero {
-=======
-
-#listaPedoneBianco {
->>>>>>> 33e0d502dfe2d64a53929862b917da3ff34e13c5
 	padding: 0;
 	background-color: rgba(0,0,0,0.4);
 	border-radius: 10px;
@@ -157,11 +152,6 @@ ul{
 	margin: auto;
 }
 
-<<<<<<< HEAD
-#listaPedoneBianco li, #listaPedoneNero li {
-=======
-
-#listaPedoneBianco li {
->>>>>>> 33e0d502dfe2d64a53929862b917da3ff34e13c5
+#listaPedoneBianco li, #listaPedoneNero li  {
 	display: inline-block;
 }
