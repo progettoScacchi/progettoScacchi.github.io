@@ -74,8 +74,6 @@ tr {
   background-color: rgba(150, 75, 0, 0.5);
 }
 
-
-
 img{
 	display: block;
 	margin: auto;
@@ -111,14 +109,15 @@ img{
 
 .scacco {
 	background-image: url("immagini/check.png");
-	background-size: 160px;
+	background-size: 180px;
 	background-repeat: no-repeat;
-   	background-position: center;
+	background-position: center;
+	
 }
 
 
-
 .scaccomatto {
+
 
 }
 
@@ -128,7 +127,6 @@ img{
 }
 
 
-
 #eliminatinero {
 	float: left;
 }
@@ -136,7 +134,6 @@ img{
 #eliminatibianco {
 	float: right;
 }
-
 
 
 ul{

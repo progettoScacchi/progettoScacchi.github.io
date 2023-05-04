@@ -111,6 +111,7 @@ class Scacchiera {
 	}
 
 	controlloScacco(gen) {
+		$("td").removeClass("scacco");
 		let Scacchiera = this;
 		let trovato = false;		//controllo se ho trovato una mossa che ci rende in scacco
 
@@ -168,7 +169,7 @@ class Scacchiera {
 				return !trovato;
 			});
 			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
-			if (gen && trovato) $("td:eq(" + (this.reBianco.x + 8*this.reBianco.y) + ")").css("backgroundColor", "yellow");
+			if (gen && trovato) $("td:eq(" + (this.reBianco.x + 8*this.reBianco.y) + ")").addClass("scacco");
 		}
 
 		else if (Scacchiera.turnoNero){
@@ -202,7 +203,7 @@ class Scacchiera {
 				return !trovato;
 			});
 			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
-			if (gen && trovato) $("td:eq(" + (this.reNero.x + 8*this.reNero.y) + ")").css("backgroundColor", "yellow");
+			if (gen && trovato) $("td:eq(" + (this.reNero.x + 8*this.reNero.y) + ")").addClass("scacco");
 		}
 		return trovato;
 	}
@@ -443,6 +444,8 @@ class Scacchiera {
 						if (obj instanceof TorreBianco || obj instanceof TorreNero || obj instanceof ReBianco || obj instanceof ReNero) {
 							obj.arroccoPossibile = false;
 						}
+
+						$.playSound('movimento_mossa.mp3');
 						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
 						//cambia il turno
 						if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
