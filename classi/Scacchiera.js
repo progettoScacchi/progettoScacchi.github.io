@@ -87,6 +87,8 @@ class Scacchiera {
 		this.spawn(this.reBianco);
 		this.spawn(this.reNero);
 		this.spawn(new PedoneBianco(7, 2))
+		this.spawn(new PedoneNero(0, 5))
+		//this.spawn(new ReginaBianco(6, 2))
 	}
 
 	//restituisce un pezzo bianco date le coordinate
@@ -174,7 +176,10 @@ class Scacchiera {
 				return !trovato;
 			});
 			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
-			if (gen && trovato) $("td:eq(" + (this.reBianco.x + 8*this.reBianco.y) + ")").addClass("scacco");
+			if (gen && trovato) {
+				$("td:eq(" + (this.reBianco.x + 8*this.reBianco.y) + ")").addClass("scacco");
+				console.log("SCACCO");
+			}
 		}
 
 		else if (Scacchiera.turnoNero){
@@ -208,7 +213,10 @@ class Scacchiera {
 				return !trovato;
 			});
 			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
-			if (gen && trovato) $("td:eq(" + (this.reNero.x + 8*this.reNero.y) + ")").addClass("scacco");
+			if (gen && trovato) {
+				$("td:eq(" + (this.reNero.x + 8*this.reNero.y) + ")").addClass("scacco");
+				console.log("SCACCO");
+			}
 		}
 		return trovato;
 	}
@@ -278,16 +286,6 @@ class Scacchiera {
 	tick() {
 		let Scacchiera = this;	//puntatore si riferisce sempre alla scacchiera
 		let classe;			//variabile d'appoggio che serve a impostare l'evento click solo sulle immagini del giocatore giusto
-
-
-		//controlli di scacco e di stallo
-		Scacchiera.scacco = Scacchiera.controlloScacco(true);		//la booleana true permette la colorazione gialla della casella del re
-		Scacchiera.stallo = Scacchiera.controlloStallo();
-
-		if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
-			if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
-			else console.log("Stallo");
-		}
 
 		if (Scacchiera.turnoBianco) classe = "bianco";
 		else if (Scacchiera.turnoNero) classe = "nero";
@@ -359,7 +357,7 @@ class Scacchiera {
 						}
 						if (pezzoEliminato) Scacchiera.delete(pezzoEliminato);
 
-						//potenziamento del pedone quando arriva a fondo scacchiera
+						//potenziamento del pedone bianco quando arriva a fondo scacchiera
 						if (obj instanceof PedoneBianco && obj.y === 0) {
 							Scacchiera.turnoBianco = false;	//il gioco si ferma (non è il turno di nessuno: il giocatore deve compiere una scelta)
 
@@ -367,11 +365,13 @@ class Scacchiera {
 
 							//click su una delle scelte
 							$("#listaPedoneBianco > li > img").one("click", function () {
+								$("#listaPedoneBianco").css("display", "none");
+								$("#listaPedoneBianco > li > img").off("click");
+
 								Scacchiera.delete(obj);	//eliminazione del pedone
 								Scacchiera.eliminatiBianco.pop();	//lo rimuove dal vettore degli eliminati
 
-
-								let pezzo = this.src.split("/")[this.src.split("/").length-1][6];
+								let pezzo = this.src.split("/")[this.src.split("/").length-1][6];	//capisce quale pezzo è stato scelto dal percorso dell'immagine cliccata
 								switch (pezzo) {
 									case 'b': {
 										obj = new AlfiereBianco(objX, 0);
@@ -391,58 +391,97 @@ class Scacchiera {
 									}
 								}
 
-								Scacchiera.spawn(obj);
+								Scacchiera.spawn(obj);	//sostituisce il pedone con l'oggetto scelto
 								visualizza(obj);
-								$("#listaPedoneBianco").css("display", "none");
-								$("#listaPedoneBianco > li > img").off("click");
-								Scacchiera.turnoNero = true;
-								Scacchiera.turnoBianco = false;
-								Scacchiera.controlloScacco(true);
-								Scacchiera.controlloStallo();
+
+								Scacchiera.turnoNero = true;	//imposta il turno del nero
+
+								//controlli di scacco e di stallo
+								Scacchiera.scacco = Scacchiera.controlloScacco(true);		//la booleana true permette la colorazione gialla della casella del re
+								Scacchiera.stallo = Scacchiera.controlloStallo();
+
+								if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
+									if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
+									else console.log("Stallo");
+								}
+
+								Scacchiera.tick();	//riesegue la funzione tick per far ripartire il gioco
+							})
+						}
+
+						//potenziamento del pedone nero quando arriva a fondo scacchiera
+						else if (obj instanceof PedoneNero && obj.y === 7) {
+							Scacchiera.turnoNero = false;	//il gioco si ferma (non è il turno di nessuno: il giocatore deve compiere una scelta)
+
+							$("#listaPedoneNero").css("display", "block");	//visualizza la lista delle scelte
+
+							//click su una delle scelte
+							$("#listaPedoneNero > li > img").one("click", function () {
+								$("#listaPedoneNero").css("display", "none");
+								$("#listaPedoneNero > li > img").off("click");
+
+								Scacchiera.delete(obj);	//eliminazione del pedone
+								Scacchiera.eliminatiNero.pop();	//lo rimuove dal vettore degli eliminati
+
+								let pezzo = this.src.split("/")[this.src.split("/").length-1][6];	//capisce quale pezzo è stato scelto dal percorso dell'immagine cliccata
+								switch (pezzo) {
+									case 'b': {
+										obj = new AlfiereNero(objX, 7);
+										break;
+									}
+									case 'k': {
+										obj = new CavalloNero(objX, 7);
+										break;
+									}
+									case 'q': {
+										obj = new ReginaNero(objX, 7);
+										break;
+									}
+									case 'r': {
+										obj = new TorreNero(objX, 7);
+										break;
+									}
+								}
+
+								Scacchiera.spawn(obj);	//sostituisce il pedone con l'oggetto scelto
+								visualizza(obj);
+
+								Scacchiera.turnoBianco = true;	//imposta il turno del bianco
+
+								//controlli di scacco e di stallo
+								Scacchiera.scacco = Scacchiera.controlloScacco(true);		//la booleana true permette la colorazione gialla della casella del re
+								Scacchiera.stallo = Scacchiera.controlloStallo();
+
+								if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
+									if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
+									else console.log("Stallo");
+								}
+
+								Scacchiera.tick();	//riesegue la funzione tick per far ripartire il gioco
 							})
 						}
 
 						//arrocco bianco
 						if (obj instanceof ReBianco && obj.arroccoPossibile) {
 							if (obj.x === 6 && obj.y === 7) {
-								Scacchiera.pezziBianco.every(function (value) {
-									if (value.x === 7 && value.y === 7) {
-										value.move(5, 7);
-										return false;
-									}
-									return true;
-								});
+								let value = Scacchiera.getPezzoBianco(7, 7);
+								value.move(5, 7);
 							}
 							if (obj.x === 2 && obj.y === 7) {
-								Scacchiera.pezziBianco.every(function (value) {
-									if (value.x === 0 && value.y === 7) {
-										value.move(3, 7);
-										return false;
-									}
-									return true;
-								});
+								let value = Scacchiera.getPezzoBianco(0, 7);
+								value.move(3, 7);
 							}
 						}
 
 						//arrocco nero
 						if (obj instanceof ReNero && obj.arroccoPossibile) {
 							if (obj.x === 6 && obj.y === 0) {
-								Scacchiera.pezziNero.every(function (value) {
-									if (value.x === 7 && value.y === 0) {
-										value.move(5, 0);
-										return false;
-									}
-									return true;
-								});
+								let value = Scacchiera.getPezzoNero(7, 0);
+								value.move(5, 0);
 							}
 							if (obj.x === 2 && obj.y === 0) {
-								Scacchiera.pezziNero.every(function (value) {
-									if (value.x === 0 && value.y === 0) {
-										value.move(3, 0);
-										return false;
-									}
-									return true;
-								});
+								let value = Scacchiera.getPezzoNero(0, 0);
+								value.move(3, 0);
 							}
 						}
 
@@ -456,11 +495,21 @@ class Scacchiera {
 						}
 
 						$.playSound('movimento_mossa.mp3');
+
 						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
 						//cambia il turno
 						if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
 							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
 							Scacchiera.turnoNero = !Scacchiera.turnoNero;
+						}
+
+						//controlli di scacco e di stallo
+						Scacchiera.scacco = Scacchiera.controlloScacco(true);		//la booleana true permette la colorazione gialla della casella del re
+						Scacchiera.stallo = Scacchiera.controlloStallo();
+
+						if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
+							if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
+							else console.log("Stallo");
 						}
 					});
 				}
