@@ -1,7 +1,8 @@
 body {
 	background-image: url("immagini/tavolo-texture.jpg");
 	background-repeat: no-repeat;
-	background-size: 1920px,1080px;
+	background-position: center;
+	background-size: cover;
 }
 
 #bordoScacchiera {
@@ -25,16 +26,44 @@ body {
 	box-shadow: 0 0 25px 5px rgba(0,0,0, 0.8);
 	/*transform: rotateX(45deg);*/
 
-	animation: fadein 2s;
+	animation: fadeIn 1.5s;
+}
+
+.game {
+	position: absolute;
+	size: 700px;
+	
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	
+}
+
+#bottone{
+	margin-top: 100px;
+	width: 700px;
+	height: 700px;
+	transition: 0.3s;
+}
+
+#bottone:hover{
+	width: 720px;
+	height: 720px;
 }
 
 
-
-
-@keyframes fadein {
+@keyframes fadeIn {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+
 
 
 
@@ -48,6 +77,8 @@ table{
   	border-color: rgb(230, 230, 230);*/
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
 }
+
+
 
 td {
 	border-collapse: collapse;

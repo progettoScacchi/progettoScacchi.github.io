@@ -116,7 +116,7 @@ class Scacchiera {
 	}
 
 	controlloScacco(gen) {
-		$("td").removeClass("scacco");
+		
 		let Scacchiera = this;
 		let trovato = false;		//controllo se ho trovato una mossa che ci rende in scacco
 
@@ -456,7 +456,7 @@ class Scacchiera {
 						}
 
 						$.playSound('movimento_mossa.mp3');
-						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
+						$("td").removeClass("scacco").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
 						//cambia il turno
 						if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
 							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
