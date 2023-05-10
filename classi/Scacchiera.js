@@ -495,12 +495,9 @@ class Scacchiera {
 						}
 
 						$.playSound('movimento_mossa.mp3');
-<<<<<<< HEAD
 						$("td").removeClass("scacco").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
-=======
 
 						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
->>>>>>> b7cf873c3f76724a66652bdd8d6c7925b219e475
 						//cambia il turno
 						if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
 							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
