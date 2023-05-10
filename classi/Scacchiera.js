@@ -54,7 +54,7 @@ class Scacchiera {
 
 	generaIniziale() {							//genera la disposizione iniziale
 		this.reBianco = new ReBianco(4, 7);
-		this.reNero = new ReNero(6, 0);
+		this.reNero = new ReNero(2, 0);
 
 		/*
 		//genera i pezzi bianchi
@@ -86,7 +86,8 @@ class Scacchiera {
 
 		this.spawn(this.reBianco);
 		this.spawn(this.reNero);
-		this.spawn(new PedoneBianco(7, 2))
+		this.spawn(new PedoneNero(6, 1))
+		this.spawn(new PedoneBianco(7, 3))
 		this.spawn(new PedoneNero(0, 5))
 		//this.spawn(new ReginaBianco(6, 2))
 	}
@@ -352,8 +353,17 @@ class Scacchiera {
 						let pezzoEliminato = null;		//pezzo catturato (se esiste)
 						if (Scacchiera.turnoBianco) {
 							pezzoEliminato = Scacchiera.getPezzoNero(obj.x, obj.y);
+							if (obj instanceof PedoneBianco) {
+								let pezzoEliminatoEnPassant = Scacchiera.getPezzoNero(obj.x, obj.y+1);
+								if (pezzoEliminatoEnPassant.enPassantPossibile) pezzoEliminato = pezzoEliminatoEnPassant;
+							}
+
 						} else {
-							pezzoEliminato = Scacchiera.getPezzoBianco(obj.x, obj.y)
+							pezzoEliminato = Scacchiera.getPezzoBianco(obj.x, obj.y);
+							if (obj instanceof PedoneNero) {
+								let pezzoEliminatoEnPassant = Scacchiera.getPezzoBianco(obj.x, obj.y+1);
+								if (pezzoEliminatoEnPassant.enPassantPossibile) pezzoEliminato = pezzoEliminatoEnPassant;
+							}
 						}
 						if (pezzoEliminato) Scacchiera.delete(pezzoEliminato);
 
@@ -464,32 +474,38 @@ class Scacchiera {
 						//arrocco bianco
 						if (obj instanceof ReBianco && obj.arroccoPossibile) {
 							if (obj.x === 6 && obj.y === 7) {
-								let value = Scacchiera.getPezzoBianco(7, 7);
-								value.move(5, 7);
+								let value = Scacchiera.getPezzoBianco(7, 7);	//torre a destra
+								value.move(5, 7);	//sposta la torre
 							}
 							if (obj.x === 2 && obj.y === 7) {
-								let value = Scacchiera.getPezzoBianco(0, 7);
-								value.move(3, 7);
+								let value = Scacchiera.getPezzoBianco(0, 7);	//torre a sinistra
+								value.move(3, 7);	//sposta la torre
 							}
 						}
 
 						//arrocco nero
 						if (obj instanceof ReNero && obj.arroccoPossibile) {
 							if (obj.x === 6 && obj.y === 0) {
-								let value = Scacchiera.getPezzoNero(7, 0);
-								value.move(5, 0);
+								let value = Scacchiera.getPezzoNero(7, 0);	//torre a destra
+								value.move(5, 0);	//sposta la torre
 							}
 							if (obj.x === 2 && obj.y === 0) {
-								let value = Scacchiera.getPezzoNero(0, 0);
-								value.move(3, 0);
+								let value = Scacchiera.getPezzoNero(0, 0);	//torre a sinistra
+								value.move(3, 0);	//sposta la torre
 							}
 						}
 
 						//aggiorniamo i controlli
-						if (obj instanceof PedoneBianco || obj instanceof PedoneNero) {
-							obj.enPassantPossibile = true;
+						if (obj instanceof PedoneBianco) {
+							if (obj.y === 4) obj.enPassantPossibile = !obj.hasMoved;
 							obj.hasMoved = true;
 						}
+
+						if (obj instanceof PedoneNero) {
+							if (obj.y === 3) obj.enPassantPossibile = !obj.hasMoved;
+							obj.hasMoved = true;
+						}
+
 						if (obj instanceof TorreBianco || obj instanceof TorreNero || obj instanceof ReBianco || obj instanceof ReNero) {
 							obj.arroccoPossibile = false;
 						}
@@ -498,10 +514,22 @@ class Scacchiera {
 						$("td").removeClass("scacco").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
 
 						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
+
 						//cambia il turno
 						if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
 							Scacchiera.turnoBianco = !Scacchiera.turnoBianco;
 							Scacchiera.turnoNero = !Scacchiera.turnoNero;
+						}
+
+						if (Scacchiera.turnoBianco) {
+							Scacchiera.pezziBianco.forEach(function (value) {
+								if (value instanceof PedoneBianco) value.enPassantPossibile = false;
+							})
+						}
+						else if (Scacchiera.turnoNero) {
+							Scacchiera.pezziNero.forEach(function (value) {
+								if (value instanceof PedoneNero) value.enPassantPossibile = false;
+							})
 						}
 
 						//controlli di scacco e di stallo
