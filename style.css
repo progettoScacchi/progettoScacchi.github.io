@@ -3,6 +3,9 @@ body {
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: cover;
+	height: 100vh;
+	width: 100vW;
+	overflow: hidden;
 }
 
 #bordoScacchiera {
@@ -10,14 +13,14 @@ body {
 	background-image: url("immagini/wood-texture.jpg");
 	background-size: 1920px,1080px;
 	background-position: center;
-
+	
+	
 	margin: auto;
 	margin-top: 100px;
-	
-	
+	margin-bottom: 100px;
+
 	border: 30px solid transparent;
 	border-image: url("immagini/bordo.png") 100 stretch;
-
 	
 
 	width: 640px;
@@ -41,15 +44,15 @@ body {
 }
 
 #bottone{
-	margin-top: 100px;
-	width: 700px;
-	height: 700px;
+	margin-top: 340px;
+	width: 421px;
+	height: 207px;
 	transition: 0.3s;
 }
 
 #bottone:hover{
-	width: 720px;
-	height: 720px;
+	width: 510px;
+	height: 250px;
 }
 
 
@@ -174,10 +177,11 @@ ul{
 #listaPedoneBianco, #listaPedoneNero {
 	padding: 0;
 	background-color: rgba(0,0,0,0.4);
-	border-radius: 10px;
+	border-radius: 13px;
 	display: none;
-	width: 292px;
 	margin: auto;
+	margin-top: 20px;
+	width: 292px;
 }
 
 #listaPedoneBianco li, #listaPedoneNero li  {

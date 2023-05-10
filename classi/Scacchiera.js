@@ -362,11 +362,13 @@ class Scacchiera {
 							Scacchiera.turnoBianco = false;	//il gioco si ferma (non è il turno di nessuno: il giocatore deve compiere una scelta)
 
 							$("#listaPedoneBianco").css("display", "block");	//visualizza la lista delle scelte
+							$("#bordoScacchiera").css("margin-top", "20px");
 
 							//click su una delle scelte
 							$("#listaPedoneBianco > li > img").one("click", function () {
 								$("#listaPedoneBianco").css("display", "none");
 								$("#listaPedoneBianco > li > img").off("click");
+								$("#bordoScacchiera").css("margin-top", "100px");
 
 								Scacchiera.delete(obj);	//eliminazione del pedone
 								Scacchiera.eliminatiBianco.pop();	//lo rimuove dal vettore degli eliminati
