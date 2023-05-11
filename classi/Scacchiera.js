@@ -355,14 +355,14 @@ class Scacchiera {
 							pezzoEliminato = Scacchiera.getPezzoNero(obj.x, obj.y);
 							if (obj instanceof PedoneBianco) {
 								let pezzoEliminatoEnPassant = Scacchiera.getPezzoNero(obj.x, obj.y+1);
-								if (pezzoEliminatoEnPassant.enPassantPossibile) pezzoEliminato = pezzoEliminatoEnPassant;
+								if (pezzoEliminatoEnPassant instanceof PedoneNero && pezzoEliminatoEnPassant.enPassantPossibile) pezzoEliminato = pezzoEliminatoEnPassant;
 							}
 
 						} else {
 							pezzoEliminato = Scacchiera.getPezzoBianco(obj.x, obj.y);
 							if (obj instanceof PedoneNero) {
-								let pezzoEliminatoEnPassant = Scacchiera.getPezzoBianco(obj.x, obj.y+1);
-								if (pezzoEliminatoEnPassant.enPassantPossibile) pezzoEliminato = pezzoEliminatoEnPassant;
+								let pezzoEliminatoEnPassant = Scacchiera.getPezzoBianco(obj.x, obj.y-1);
+								if (pezzoEliminatoEnPassant instanceof PedoneBianco && pezzoEliminatoEnPassant.enPassantPossibile) pezzoEliminato = pezzoEliminatoEnPassant;
 							}
 						}
 						if (pezzoEliminato) Scacchiera.delete(pezzoEliminato);
@@ -515,7 +515,7 @@ class Scacchiera {
 						$.playSound('movimento_mossa.mp3');
 						$("td").removeClass("scacco").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
 
-						$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");
+   
 
 						//cambia il turno
 						if (Scacchiera.turnoNero !== Scacchiera.turnoBianco) {
