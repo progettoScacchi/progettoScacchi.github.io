@@ -119,9 +119,9 @@ class Scacchiera {
 		return obj;
 	}
 
-	controlloScacco() { //colore indica se devo colorare o meno la cella del re
+	controlloScacco() {
 		let Scacchiera = this;
-		let scacco = false;		//controllo se ho trovato una mossa che ci rende in scacco
+		let scacco = false;
 
 		if (Scacchiera.turnoBianco) {	//se è il turno del bianco
 			Scacchiera.pezziNero.every(function (value) {	//scorre tutti i pezzi del nero
@@ -129,6 +129,7 @@ class Scacchiera {
 				mosse.every(function (value) {	//guarda tutte le mosse
 					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) {
 						scacco = true;	//se una delle mosse cattura il re allora siamo in scacco
+
 					}
 					return !scacco;
 				})
@@ -154,95 +155,102 @@ class Scacchiera {
 	}
 
 
-	controlloScaccoMosse() { //colore indica se devo colorare o meno la cella del re
+	controlloScaccoMosse() {
 		let Scacchiera = this;
 		let scacco = false;		//controllo se ho trovato una mossa che ci rende in scacco
 		let pezzoCatturato = null; //salvo il pezzo che il re potrebbe catturare
 
 		if (Scacchiera.turnoBianco) {
-			//scorre tutti i pezzi del bianco
 			let torreDx = false;
 			let torreSx = false;
-			Scacchiera.pezziBianco.every(function (value) {
+
+			//scorre tutti i pezzi del bianco
+			Scacchiera.pezziBianco.forEach(function (value) {
+				//trova se l'arrocco è possibile a destra o a sinistra
 				if (value instanceof TorreBianco && value.x === 7) torreDx = value.arroccoPossibile;
 				if (value instanceof TorreBianco && value.x === 0) torreSx = value.arroccoPossibile;
-				//scorre tutti i pezzi del nero e se trova che uno sovrappone uno dei pezzi del bianco lo elimina temporaneamente
+
+				//se trova un pezzo nero che si sovrappone ad uno dei pezzi del bianco lo elimina temporaneamente
 				//questo serve a contare in caso di scacco anche quelle mosse che rimuovono lo scacco catturando un pezzo
-				Scacchiera.pezziNero.every(function (target) {
-					if (value.x === target.x && value.y === target.y) {
-						pezzoCatturato = target;
-						Scacchiera.delete(target);
-						Scacchiera.eliminatiNero.pop();
-						return false;
-					}
-					return true;
-				});
-				return true;
+				let target = Scacchiera.getPezzoNero(value.x, value.y);
+				if (target) {
+					pezzoCatturato = target;
+					Scacchiera.delete(target);
+					Scacchiera.eliminatiNero.pop();
+				}
 			});
 
-
-			Scacchiera.pezziNero.every(function (value) {
+			//calcola tutte le mosse dei pezzi neri
+			Scacchiera.pezziNero.forEach(function (value) {
 				let mosse = value.calcolaMossePossibili(Scacchiera);
-				mosse.every(function (value) {
+				mosse.forEach(function (value) {
+					//se trova una mossa che cattura il re imposta scacco = true e smette di cercare
 					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) {
 						scacco = true;
-						return false;
 					}
+
+					//controllo per l'arrocco
 					if (Scacchiera.reBianco.y === 7 && Scacchiera.reBianco.arroccoPossibile) {
 						if (Scacchiera.reBianco.x === 6 && torreDx) {
 							if (value[0] === 5 && value[1] === 7) {
 								scacco = true;
-								return false;
 							}
 						}
 						if (Scacchiera.reBianco.x === 2 && torreSx) {
-
 							if (value[0] === 3 && value[1] === 7) {
 								scacco = true;
-								return false;
 							}
 						}
 					}
-					return true;
 				})
-				return !scacco;
 			});
-			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
+
+			if (pezzoCatturato) {
+				Scacchiera.spawn(pezzoCatturato);
+			}	//se ha eliminato un pezzo precedentemente lo ricrea
 		}
 
 		else if (Scacchiera.turnoNero){
+			let torreDx = false;
+			let torreSx = false;
+
 			//scorre tutti i pezzi del nero
-			Scacchiera.pezziNero.every(function (value) {
+			Scacchiera.pezziNero.forEach(function (value) {
+				if (value instanceof TorreBianco && value.x === 7) torreDx = value.arroccoPossibile;
+				if (value instanceof TorreBianco && value.x === 0) torreSx = value.arroccoPossibile;
 				//scorre tutti i pezzi del bianco e se trova che uno sovrappone uno dei pezzi del nero lo elimina temporaneamente
 				//questo serve a contare in caso di scacco anche quelle mosse che rimuovono lo scacco catturando un pezzo
-				Scacchiera.pezziBianco.every(function (target) {
-					if (value.x === target.x && value.y === target.y) {
-						pezzoCatturato = target;
-						Scacchiera.delete(target);
-						Scacchiera.eliminatiBianco.pop();
-						return false;
-					}
-					return true;
-				});
-				return true;
+				let target = Scacchiera.getPezzoBianco(value.x, value.y);
+				if (target) {
+					pezzoCatturato = target;
+					Scacchiera.delete(target);
+					Scacchiera.eliminatiBianco.pop();
+				}
 			});
 
-
-			Scacchiera.pezziBianco.every(function (target) {
+			Scacchiera.pezziBianco.forEach(function (target) {
 				let mosse = target.calcolaMossePossibili(Scacchiera);
-				mosse.every(function (value) {
+				mosse.forEach(function (value) {
 					if (value[0] === Scacchiera.reNero.x && value[1] === Scacchiera.reNero.y) {
-						//$("td:eq(" + (value[0] + 8*value[1]) + ")").css("backgroundColor", "yellow");
 						scacco = true;
-						return false;
 					}
-					return true;
+					//arrocco
+					if (Scacchiera.reNero.y === 7 && Scacchiera.reNero.arroccoPossibile) {
+						if (Scacchiera.reNero.x === 6 && torreDx) {
+							if (value[0] === 5 && value[1] === 7) {
+								scacco = true;
+							}
+						}
+						if (Scacchiera.reNero.x === 2 && torreSx) {
+							if (value[0] === 3 && value[1] === 7) {
+								scacco = true;
+							}
+						}
+					}
 				})
-				return !scacco;
 			});
-			if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);
+			if (pezzoCatturato) {Scacchiera.spawn(pezzoCatturato);}//se ha eliminato un pezzo precedentemente lo ricrea
 		}
-		return scacco;
 	}
 
 	controlloStallo () {
@@ -264,7 +272,7 @@ class Scacchiera {
 						$("td:eq(" + (objX + 8 * objY) + ")").html("");
 						visualizza(target);
 
-						if (!Scacchiera.controlloScacco()) {
+						if (!Scacchiera.controlloScaccoMosse()) {
 							mossaTrovata = true;
 						}
 
@@ -289,7 +297,7 @@ class Scacchiera {
 						target.move(value[0], value[1]);
 						$("td:eq(" + (objX + 8 * objY) + ")").html("");
 						visualizza(target);
-						if (!Scacchiera.controlloScacco()) {
+						if (!Scacchiera.controlloScaccoMosse()) {
 							mossaTrovata = true;
 						}
 						target.move(objX, objY);
@@ -316,7 +324,7 @@ class Scacchiera {
 
 		//click su un'immagine
 		$(".img"+ classe).one("click", function  () {	//con il metodo "one" l'evento si verifica una sola volta
-			$("td").css("backgroundColor", "").removeClass("selezionato").removeClass("mosse").off("click");			//rimuove modificatori ed eventi attivi sulle caselle
+			$("td").removeClass("selezionato").removeClass("mosse").removeClass("mangia").off("click");		//rimuove modificatori ed eventi attivi sulle caselle
 
 			//trovo l'indice della casella in cui è contenuta l'immagine (this.parentNode) nel vettore delle caselle $("td") ed estrapolo le coordinate
 			let indiceVettore = Array.prototype.indexOf.call($("td"), this.parentNode);
@@ -437,7 +445,7 @@ class Scacchiera {
 								Scacchiera.turnoNero = true;	//imposta il turno del nero
 
 								//controlli di scacco e di stallo
-								Scacchiera.scacco = Scacchiera.controlloScacco(true);		//la booleana true permette la colorazione gialla della casella del re
+								Scacchiera.scacco = Scacchiera.controlloScacco();		//la booleana true permette la colorazione gialla della casella del re
 								Scacchiera.stallo = Scacchiera.controlloStallo();
 
 								if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
@@ -483,19 +491,21 @@ class Scacchiera {
 									}
 								}
 
+
 								Scacchiera.spawn(obj);	//sostituisce il pedone con l'oggetto scelto
 								visualizza(obj);
 
 								Scacchiera.turnoBianco = true;	//imposta il turno del bianco
 
 								//controlli di scacco e di stallo
-								Scacchiera.scacco = Scacchiera.controlloScacco(true);		//la booleana true permette la colorazione gialla della casella del re
+								Scacchiera.scacco = Scacchiera.controlloScacco();		//la booleana true permette la colorazione gialla della casella del re
 								Scacchiera.stallo = Scacchiera.controlloStallo();
 
 								if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
 									if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
 									else console.log("Stallo");
 								}
+
 
 								Scacchiera.tick();	//riesegue la funzione tick per far ripartire il gioco
 							})
