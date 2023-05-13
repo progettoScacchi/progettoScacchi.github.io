@@ -5,6 +5,7 @@ body {
 	background-size: cover;
 	height: 100vh;
 	width: 100vW;
+	margin: 0;
 	overflow: hidden;
 }
 
@@ -38,6 +39,22 @@ body {
 	left: 0;
 	right: 0;
 	margin: 0 auto;
+}
+
+#victory {
+	display: none;
+	background-color: rgba(0, 0, 0, 0.456);
+	backdrop-filter: blur(5px);
+	height: 100vh;
+	width: 100vW;
+	z-index: 1;
+}
+
+#victory img{
+	margin-top: 90px;
+	width: 700px;
+	height: 700px;
+	z-index: 1;
 }
 
 #bottone{
@@ -139,10 +156,6 @@ display: block;
 	background-size: 180px;
 	background-repeat: no-repeat;
 	background-position: center;
-}
-
-.scaccomatto {
-
 }
 
 #eliminatinero {

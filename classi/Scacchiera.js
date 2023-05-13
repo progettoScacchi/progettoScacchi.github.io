@@ -310,8 +310,27 @@ class Scacchiera {
 		return !mossaTrovata;
 	}
 
+
+	scaccoMatto() {
+		if(this.turnoBianco) $("#victory").html("<img src ='immagini/vnero.png'>");      //invertiti perchè è cambiato il turno
+		else if (this.turnoNero) $("#victory").html("<img src ='immagini/vbianco.png'>");
+		
+		$("#victory").slideDown(1200,"swing");
+
+		setTimeout(function(){
+			$("body").click(function(){	
+				$("#victory").hide();
+				$("body").off("click");
+			})
+		} ,1200);
+
+		
+	}	
+
+
 	//aggiorna la logica di gioco
 	tick() {
+		
 		let Scacchiera = this;	//puntatore si riferisce sempre alla scacchiera
 		let classe;			//variabile d'appoggio che serve a impostare l'evento click solo sulle immagini del giocatore giusto
 
@@ -573,7 +592,7 @@ class Scacchiera {
 						Scacchiera.stallo = Scacchiera.controlloStallo();
 
 						if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
-							if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
+							if (Scacchiera.scacco) Scacchiera.scaccoMatto();		//scacco + stallo = scacco matto
 							else console.log("Stallo");
 						}
 					});
@@ -581,4 +600,7 @@ class Scacchiera {
 			});
 		});
 	}
+
+	
+
 }
