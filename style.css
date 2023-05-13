@@ -33,7 +33,7 @@ body {
 	animation: fadeIn 1.5s;
 }
 
-.game {
+.game, #victory {
 	position: absolute;
 	size: 700px;
 	top: 0;
@@ -46,6 +46,7 @@ body {
 	margin-top: 340px;
 	width: 421px;
 	height: 207px;
+	z-index: 1;
 	transition: 0.3s;
 }
 
@@ -189,3 +190,5 @@ ul{
 #listaPedoneBianco li, #listaPedoneNero li  {
 	display: inline-block;
 }
+
+

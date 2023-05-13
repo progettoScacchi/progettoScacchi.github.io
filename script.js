@@ -1,10 +1,14 @@
+    $("#bottone").click(avviaGame); 
+    let scacchiera = null;
 
-    let scacchiera = new Scacchiera();	//crea l'oggetto scacchiera
+function avviaGame(){
+    $("#bottone").hide();
+    scacchiera = new Scacchiera();	//crea l'oggetto scacchiera
     scacchiera.generaIniziale();    //genera la configurazione iniziale della partita
     $("#tabScacchiera").click(loop);  //aggiunge un gestore dell'evento click sulla scacchiera
     loop();	//attiva il gioco
-    $("#bottone").hide();
-
+    
+}
 
 function loop() {
     $("td").html("");   //svuota le caselle
