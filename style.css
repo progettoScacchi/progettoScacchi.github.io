@@ -17,13 +17,14 @@ body {
 	
 	margin: auto;
 	margin-top: 100px;
-	margin-bottom: 100px;
 
-	border: 30px solid transparent;
+	border: 20px solid transparent;
 	border-image: url("immagini/bordo.png") 100 stretch;
 	
 
+
 	width: 640px;
+
 	padding: 0px;
 	
 	box-shadow: 0 0 25px 5px rgba(0,0,0, 0.8);
@@ -35,12 +36,10 @@ body {
 .game {
 	position: absolute;
 	size: 700px;
-	
 	top: 0;
 	left: 0;
 	right: 0;
 	margin: 0 auto;
-	
 }
 
 #bottone{
@@ -68,14 +67,10 @@ body {
 
 
 
-
-
-
 table{
 	margin: auto;
 	border: 5px;
 	border-collapse: collapse;
-	
 	/*border-style: solid;
   	border-color: rgb(230, 230, 230);*/
 	box-shadow: 0 0 20px 15px rgba(0,0,0, 0.8) inset;
@@ -109,7 +104,7 @@ tr {
 }
 
 img{
-	display: block;
+display: block;
 	margin: auto;
 	height: 70px;
 	width: 70px;
@@ -118,7 +113,6 @@ img{
 
 
 .selezionato{
-	
 	/*background-color: rgba(255, 255, 255, 0.5);*/
 	background-image:  url("immagini/selezione.png") ;
 	background-size: 180px;
@@ -163,10 +157,18 @@ img{
 
 #eliminatinero {
 	float: left;
+	background-color: rgba(0,0,0,0.4);
+	border-radius: 13px;
+	padding:0;
+	margin-left:40px;
 }
 
 #eliminatibianco {
 	float: right;
+	background-color: rgba(0,0,0,0.4);
+	border-radius: 13px;
+	padding:0;
+	margin-right:40px;
 }
 
 
