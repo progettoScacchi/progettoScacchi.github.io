@@ -54,9 +54,8 @@ class Scacchiera {
 
 	generaIniziale() {							//genera la disposizione iniziale
 		this.reBianco = new ReBianco(4, 7);
-		this.reNero = new ReNero(2, 0);
+		this.reNero = new ReNero(4, 0);
 
-		/*
 		//genera i pezzi bianchi
 		this.spawn(new TorreBianco(0, 7));
 		this.spawn(new CavalloBianco(1, 7));
@@ -82,15 +81,7 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneNero(i, 1));
 		}
-		*/
 
-		this.spawn(this.reBianco);
-		this.spawn(this.reNero);
-		this.spawn(new PedoneNero(6, 1))
-		this.spawn(new PedoneBianco(7, 3))
-		this.spawn(new PedoneBianco(1, 6))
-		this.spawn(new PedoneNero(0, 4))
-		//this.spawn(new ReginaBianco(6, 2))
 	}
 
 	//restituisce un pezzo bianco date le coordinate
@@ -129,7 +120,6 @@ class Scacchiera {
 				mosse.every(function (value) {	//guarda tutte le mosse
 					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) {
 						scacco = true;	//se una delle mosse cattura il re allora siamo in scacco
-
 					}
 					return !scacco;
 				})
@@ -154,21 +144,20 @@ class Scacchiera {
 		return scacco;
 	}
 
-
 	controlloScaccoMosse() {
 		let Scacchiera = this;
 		let scacco = false;		//controllo se ho trovato una mossa che ci rende in scacco
 		let pezzoCatturato = null; //salvo il pezzo che il re potrebbe catturare
 
 		if (Scacchiera.turnoBianco) {
-			let torreDx = false;
-			let torreSx = false;
+			let torreDxArrocco = false;
+			let torreSxArrocco = false;
 
 			//scorre tutti i pezzi del bianco
 			Scacchiera.pezziBianco.forEach(function (value) {
 				//trova se l'arrocco è possibile a destra o a sinistra
-				if (value instanceof TorreBianco && value.x === 7) torreDx = value.arroccoPossibile;
-				if (value instanceof TorreBianco && value.x === 0) torreSx = value.arroccoPossibile;
+				if (value instanceof TorreBianco && value.x === 7) torreDxArrocco = value.arroccoPossibile;
+				if (value instanceof TorreBianco && value.x === 0) torreSxArrocco = value.arroccoPossibile;
 
 				//se trova un pezzo nero che si sovrappone ad uno dei pezzi del bianco lo elimina temporaneamente
 				//questo serve a contare in caso di scacco anche quelle mosse che rimuovono lo scacco catturando un pezzo
@@ -185,39 +174,34 @@ class Scacchiera {
 				let mosse = value.calcolaMossePossibili(Scacchiera);
 				mosse.forEach(function (value) {
 					//se trova una mossa che cattura il re imposta scacco = true e smette di cercare
-					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) {
-						scacco = true;
-					}
+					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) scacco = true;
 
-					//controllo per l'arrocco
-					if (Scacchiera.reBianco.y === 7 && Scacchiera.reBianco.arroccoPossibile) {
-						if (Scacchiera.reBianco.x === 6 && torreDx) {
-							if (value[0] === 5 && value[1] === 7) {
+					if (Scacchiera.reBianco.arroccoPossibile) {	//se l'arrocco è possibile
+						if (Scacchiera.reBianco.x === 6 && torreDxArrocco) {	//se è stato eseguito l'arrocco a destra
+							if (value[0] === 5 && value[1] === 7) {	//controlla se la casella (5,7) è attaccata
 								scacco = true;
 							}
 						}
-						if (Scacchiera.reBianco.x === 2 && torreSx) {
-							if (value[0] === 3 && value[1] === 7) {
+						if (Scacchiera.reBianco.x === 2 && torreSxArrocco) {	//se è stato eseguito l'arrocco a sinistra
+							if (value[0] === 3 && value[1] === 7) { //controlla se la casella (2,7) è attaccata
 								scacco = true;
 							}
 						}
 					}
 				})
 			});
-
-			if (pezzoCatturato) {
-				Scacchiera.spawn(pezzoCatturato);
-			}	//se ha eliminato un pezzo precedentemente lo ricrea
 		}
 
 		else if (Scacchiera.turnoNero){
-			let torreDx = false;
-			let torreSx = false;
+			let torreDxArrocco = false;
+			let torreSxArrocco = false;
 
 			//scorre tutti i pezzi del nero
 			Scacchiera.pezziNero.forEach(function (value) {
-				if (value instanceof TorreBianco && value.x === 7) torreDx = value.arroccoPossibile;
-				if (value instanceof TorreBianco && value.x === 0) torreSx = value.arroccoPossibile;
+				//trova se l'arrocco è possibile a destra o a sinistra
+				if (value instanceof TorreNero && value.x === 7) torreDxArrocco = value.arroccoPossibile;
+				if (value instanceof TorreNero && value.x === 0) torreSxArrocco = value.arroccoPossibile;
+
 				//scorre tutti i pezzi del bianco e se trova che uno sovrappone uno dei pezzi del nero lo elimina temporaneamente
 				//questo serve a contare in caso di scacco anche quelle mosse che rimuovono lo scacco catturando un pezzo
 				let target = Scacchiera.getPezzoBianco(value.x, value.y);
@@ -231,85 +215,97 @@ class Scacchiera {
 			Scacchiera.pezziBianco.forEach(function (target) {
 				let mosse = target.calcolaMossePossibili(Scacchiera);
 				mosse.forEach(function (value) {
-					if (value[0] === Scacchiera.reNero.x && value[1] === Scacchiera.reNero.y) {
-						scacco = true;
-					}
+					if (value[0] === Scacchiera.reNero.x && value[1] === Scacchiera.reNero.y) scacco = true;
+
 					//arrocco
-					if (Scacchiera.reNero.y === 7 && Scacchiera.reNero.arroccoPossibile) {
-						if (Scacchiera.reNero.x === 6 && torreDx) {
-							if (value[0] === 5 && value[1] === 7) {
+					if (Scacchiera.reNero.arroccoPossibile) { //se l'arrocco è possibile
+						if (Scacchiera.reNero.x === 6 && torreDxArrocco) { //se è stato eseguito l'arrocco a destra
+							if (value[0] === 5 && value[1] === 0) { //controlla se la casella (5,0) è attaccata
 								scacco = true;
 							}
 						}
-						if (Scacchiera.reNero.x === 2 && torreSx) {
-							if (value[0] === 3 && value[1] === 7) {
+						if (Scacchiera.reNero.x === 2 && torreSxArrocco) { //se è stato eseguito l'arrocco a destra
+							if (value[0] === 3 && value[1] === 0) { //controlla se la casella (3,0) è attaccata
 								scacco = true;
 							}
 						}
 					}
 				})
 			});
-			if (pezzoCatturato) {Scacchiera.spawn(pezzoCatturato);}//se ha eliminato un pezzo precedentemente lo ricrea
 		}
+		if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);//se ha eliminato un pezzo precedentemente lo ricrea
+
+		return scacco;
 	}
 
 	controlloStallo () {
 		let Scacchiera = this;
 		let mossaTrovata = false;
-		let casellaMossa
+		//let casellaMossa
 
 		if (Scacchiera.turnoBianco) {
-			Scacchiera.pezziBianco.every(function(target){
-				let mosse = target.calcolaMossePossibili(Scacchiera);
-				if (mosse.length !== 0) {
+			Scacchiera.pezziBianco.every(function(target){	//scorre tutti i pezzi del bianco finchè non trova una mossa valida
+				let mosse = target.calcolaMossePossibili(Scacchiera);	//calcola le mosse possibili
+				if (mosse.length !== 0) {			//se sono presenti mosse
+					//controllare che la mossa non crei uno scacco
 					mosse.every(function (value) {
-						let objX = target.x;
+						let objX = target.x;	//salvo la posizione iniziale del pezzo
 						let objY = target.y;
 
-						casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();
+						//casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();	//salva il pezzo presente nella casella in cui si muove
 
+						//sposta temporaneamente il pezzo e lo visualizza
 						target.move(value[0], value[1]);
 						$("td:eq(" + (objX + 8 * objY) + ")").html("");
 						visualizza(target);
 
-						if (!Scacchiera.controlloScaccoMosse()) {
-							mossaTrovata = true;
-						}
+						//se non causa scacco
+						if (!Scacchiera.controlloScaccoMosse()) mossaTrovata = true;	//trova una mossa
 
+						//ripristina i pezzi
 						target.move(objX, objY);
 						visualizza(target);
-						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
+						//$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
+
 						return !mossaTrovata;
 					})
 				}
-				return true;
+				return !mossaTrovata;
 			});
 		}
+
 		else if (Scacchiera.turnoNero) {
 			Scacchiera.pezziNero.every(function(target){
-				let mosse = target.calcolaMossePossibili(Scacchiera);
-				if (mosse.length !== 0) {
+				let mosse = target.calcolaMossePossibili(Scacchiera);	//calcola le mosse possibili
+				if (mosse.length !== 0) {			//se sono presenti mosse
+
+					//controllare che la mossa non crei uno scacco
 					mosse.every(function (value) {
-						let objX = target.x;
+						let objX = target.x;	//salvo la posizione iniziale del pezzo
 						let objY = target.y;
 
-						casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();
+						//casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();	//salva il pezzo presente nella casella in cui si muove
+
+						//sposta temporaneamente il pezzo e lo visualizza
 						target.move(value[0], value[1]);
 						$("td:eq(" + (objX + 8 * objY) + ")").html("");
 						visualizza(target);
-						if (!Scacchiera.controlloScaccoMosse()) {
-							mossaTrovata = true;
-						}
+
+						//se non causa scacco
+						if (!Scacchiera.controlloScaccoMosse()) mossaTrovata = true;	//trova una mossa
+
+						//ripristina i pezzi
 						target.move(objX, objY);
-						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
 						visualizza(target);
+						//$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
+
 						return !mossaTrovata;
 					})
 				}
-				return true;
+				return !mossaTrovata;
 			});
 		}
-		else return false;
+		else return false; //se non è turno di nessuno non è stallo
 
 		return !mossaTrovata;
 	}
@@ -383,7 +379,7 @@ class Scacchiera {
 						$.playSound('movimento_mossa.mp3');	//suono del movimento
 
 						//eliminazione dei pezzi catturati
-						let pezzoEliminato = null;		//pezzo catturato (se esiste)
+						let pezzoEliminato;		//pezzo catturato (se esiste)
 						if (Scacchiera.turnoBianco) {
 							pezzoEliminato = Scacchiera.getPezzoNero(obj.x, obj.y);
 
