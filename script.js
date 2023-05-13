@@ -6,7 +6,6 @@
     $("#bottone").hide();
 
 
-
 function loop() {
     $("td").html("");   //svuota le caselle
 
