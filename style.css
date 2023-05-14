@@ -14,13 +14,10 @@ body {
 	background-size: 1920px,1080px;
 	background-position: center;
 
-
 	margin: 100px auto auto;
 
 	border: 20px solid transparent;
 	border-image: url("immagini/bordo.png") 100 stretch;
-	
-
 
 	width: 640px;
 
@@ -31,6 +28,36 @@ body {
 
 	animation: fadeIn 1.5s;
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+.restart {
+	position: absolute;
+	size: 200px;
+	margin-left: 380px;
+	margin-top: 280px;
+	z-index: 1;
+}
+
+#bottoneRestart {
+	width: 100px;
+	height: 100px;	
+	transition: 0.3s;
+}
+
+#bottoneRestart:hover {
+	width: 120px;
+	height: 120px;	
+}
+
 
 .game, #victory {
 	position: absolute;
@@ -71,15 +98,7 @@ body {
 }
 
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
 
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to   { opacity: 0; }
-}
 
 
 
