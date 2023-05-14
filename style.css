@@ -1,21 +1,29 @@
 body {
 	background-image: url("immagini/tavolo-texture.jpg");
 	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+	/* background-position: center; */
 	height: 100vh;
 	width: 100vW;
 	margin: 0;
 	overflow: hidden;
+	background-size: cover;
 }
+
+#spazioDiGioco {
+	position: relative;
+	margin: auto;
+	top: 0;
+}
+
 
 #bordoScacchiera {
 	background-image: url("immagini/wood-texture.jpg");
 	background-size: 1920px,1080px;
 	background-position: center;
+	position: relative;
 
-	margin: 100px auto auto;
-
+	margin: 0px auto auto;
+	top: 100px;
 	border: 20px solid transparent;
 	border-image: url("immagini/bordo.png") 100 stretch;
 
@@ -41,13 +49,11 @@ body {
 
 .restart {
 	position: absolute;
-	size: 200px;
-	margin-left: 380px;
-	margin-top: 280px;
 	z-index: 1;
 }
 
 #bottoneRestart {
+	animation: fadeIn 1.5s;
 	width: 100px;
 	height: 100px;	
 	transition: 0.3s;
@@ -180,18 +186,26 @@ img{
 
 #eliminatinero {
 	float: left;
+	position: relative;
 	background-color: rgba(0,0,0,0.4);
 	border-radius: 13px;
 	padding:0;
 	margin-left:40px;
+	top:100px;
+	max-height: 640px;
+	overflow:auto;
 }
 
 #eliminatibianco {
 	float: right;
+	position: relative;
 	background-color: rgba(0,0,0,0.4);
 	border-radius: 13px;
 	padding:0;
 	margin-right:40px;
+	top:100px;
+	max-height: 640px;
+	overflow:auto;
 }
 
 
@@ -205,7 +219,14 @@ ul{
 	border-radius: 13px;
 	display: none;
 	margin: 20px auto auto;
-	width: 292px;
+	width: 293px;
+	position: absolute;
+	z-index: 1;
+	left: calc(50vw - 146px);
+}
+
+#listaPedoneNero {
+	top: 770px;
 }
 
 #listaPedoneBianco li, #listaPedoneNero li  {

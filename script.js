@@ -1,6 +1,7 @@
     $("#bottone").click(avviaGame); 
-    let scacchiera = null;
     $("#bottoneRestart").hide();
+    let scacchiera = null;
+
     
 function avviaGame(){
     $("#bottone").css("animation","fadeOut 1.5s;");
@@ -8,16 +9,30 @@ function avviaGame(){
     setTimeout(function() { $("#bottone").hide(); }, 1500)
 
     scacchiera = new Scacchiera();	//crea l'oggetto scacchiera
+
     scacchiera.generaIniziale();    //genera la configurazione iniziale della partita
     $("#tabScacchiera").click(loop);  //aggiunge un gestore dell'evento click sulla scacchiera
     loop();	//attiva il gioco
+
+    $("#bottoneRestart").show().click(function(){  //gestione del tasto per fare restart
+
+        $("#spazioDiGioco").html("");
+        delete scacchiera;
+        scacchiera = new Scacchiera();
+        scacchiera.generaIniziale();   
+        $("#tabScacchiera").click(loop);  
+        loop();	
+    });
 }
 
 function loop() {
     $("td").html("");   //svuota le caselle
 
     let pezzi = scacchiera.pezziBianco.concat(scacchiera.pezziNero);	//riceve tutti i pezzi presenti sulla scacchiera
+  
     let pezziEliminati = scacchiera.eliminatiBianco.concat(scacchiera.eliminatiNero);  //riceve tutti i pezzi eliminati
+
+    
 
     pezzi.forEach(visualizza); //mostra tutti i pezzi presenti sulla scacchiera
 
@@ -39,5 +54,6 @@ function visualizzaEliminati(value) {   //questa funzione si occupa di visualizz
     let colore;
     if (value instanceof PezzoBianco) colore = "bianco";
     else colore = "nero";
+    
     $("#eliminati" + colore).append('<li><img src=' + value.immagine + "></li>");
 }
