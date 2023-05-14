@@ -263,7 +263,7 @@ class Scacchiera {
 						let objX = target.x;	//salvo la posizione iniziale del pezzo
 						let objY = target.y;
 
-						//casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();	//salva il pezzo presente nella casella in cui si muove
+						casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();	//salva il pezzo presente nella casella in cui si muove
 
 						//sposta temporaneamente il pezzo e lo visualizza
 						target.move(value[0], value[1]);
@@ -276,8 +276,7 @@ class Scacchiera {
 						//ripristina i pezzi
 						target.move(objX, objY);
 						visualizza(target);
-						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
-						//$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
 
 						return !mossaTrovata;
 					})
@@ -309,7 +308,6 @@ class Scacchiera {
 						//ripristina i pezzi
 						target.move(objX, objY);
 						visualizza(target);
-						//$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
 						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
 
 						return !mossaTrovata;
