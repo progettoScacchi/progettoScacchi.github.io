@@ -248,6 +248,7 @@ class Scacchiera {
 	}
 
 	controlloStallo () {
+		console.clear();
 		let Scacchiera = this;
 		let mossaTrovata = false;
 		let casellaMossa
@@ -284,14 +285,13 @@ class Scacchiera {
 				return !mossaTrovata;
 			});
 		}
-
 		else if (Scacchiera.turnoNero) {
 			Scacchiera.pezziNero.every(function(target){
 				let mosse = target.calcolaMossePossibili(Scacchiera);	//calcola le mosse possibili
 				if (mosse.length !== 0) {			//se sono presenti mosse
-
 					//controllare che la mossa non crei uno scacco
 					mosse.every(function (value) {
+
 						let objX = target.x;	//salvo la posizione iniziale del pezzo
 						let objY = target.y;
 
@@ -351,6 +351,15 @@ class Scacchiera {
 	tick() {
 		let Scacchiera = this;	//puntatore si riferisce sempre alla scacchiera
 		let classe;			//variabile d'appoggio che serve a impostare l'evento click solo sulle immagini del giocatore giusto
+
+		//controlli di scacco e di stallo
+		Scacchiera.scacco = Scacchiera.controlloScacco();		//la booleana true permette la colorazione gialla della casella del re
+		Scacchiera.stallo = Scacchiera.controlloStallo();
+
+		if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
+			if (Scacchiera.scacco) Scacchiera.scaccoMatto();		//scacco + stallo = scacco matto
+			else Scacchiera.staleMate();
+		}
 
 		if (Scacchiera.turnoBianco) classe = "bianco";
 		else if (Scacchiera.turnoNero) classe = "nero";
@@ -605,14 +614,7 @@ class Scacchiera {
 							})
 						}
 
-						//controlli di scacco e di stallo
-						Scacchiera.scacco = Scacchiera.controlloScacco();		//la booleana true permette la colorazione gialla della casella del re
-						Scacchiera.stallo = Scacchiera.controlloStallo();
 
-						if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
-							if (Scacchiera.scacco) Scacchiera.scaccoMatto();		//scacco + stallo = scacco matto
-							else Scacchiera.staleMate();
-						}
 					});
 				}
 			});

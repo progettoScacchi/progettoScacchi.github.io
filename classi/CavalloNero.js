@@ -40,8 +40,11 @@ class CavalloNero extends PezzoNero {
 
             if (this.y-1 >= 0) {    //se non va oltre il margine superiore
                 if ($("td:eq(" + (this.x+2 + 8*(this.y-1)) + ")").html() === "") mossePossibili.push([this.x+2, this.y-1]);
-                else if ($("td:eq(" + (this.x+2 + 8*(this.y-1)) + ")").html().search("white") !== -1) mossePossibili.push([this.x+2, this.y-1]);
+                else if ($("td:eq(" + (this.x+2 + 8*(this.y-1)) + ")").html().search("white") !== -1) {
+                    mossePossibili.push([this.x+2, this.y-1]);
+                }
             }
+
         }
 
         //controlla le caselle verso sinistra
