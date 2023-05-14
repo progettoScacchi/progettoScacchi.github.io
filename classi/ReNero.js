@@ -20,11 +20,11 @@ class ReNero extends PezzoNero {
         }
 
         if (this.arroccoPossibile) {        //se questo re può fare l'arrocco
-            if ($("td:eq(61)").html() === "" && $("td:eq(62)").html() === "") {     //se sono vuote le caselle tra il re e la posizione della torre a destra
+            if ($("td:eq(5)").html() === "" && $("td:eq(6)").html() === "") {     //se sono vuote le caselle tra il re e la posizione della torre a destra
                 let pezzo = Scacchiera.getPezzoNero(7, 0);    //prende il pezzo in posizione 7, 0
                 if (pezzo instanceof TorreNero && pezzo.arroccoPossibile) mossePossibili.push([6, 0]);    //se è una torre nera e può fare l'arrocco aggiunge la mossa dell'arrocco
             }
-            if ($("td:eq(59)").html() === "" && $("td:eq(58)").html() === "" && $("td:eq(57)").html() === "") { //se sono vuote le caselle tra il re e la posizione della torre a sinistra
+            if ($("td:eq(1)").html() === "" && $("td:eq(2)").html() === "" && $("td:eq(3)").html() === "") { //se sono vuote le caselle tra il re e la posizione della torre a sinistra
                 let pezzo = Scacchiera.getPezzoNero(0, 0);    //prende il pezzo in posizione 0, 0
                 if (pezzo instanceof TorreNero && pezzo.arroccoPossibile) mossePossibili.push([2, 0]);    //se è una torre nera e può fare l'arrocco aggiunge la mossa dell'arrocco
             }
