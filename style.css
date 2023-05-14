@@ -120,11 +120,12 @@ tr {
 }
 
 img{
-display: block;
+	display: block;
 	margin: auto;
 	height: 70px;
 	width: 70px;
 	padding: 0;
+	user-select: none;
 }
 
 

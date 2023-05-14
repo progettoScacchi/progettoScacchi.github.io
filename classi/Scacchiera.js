@@ -56,6 +56,7 @@ class Scacchiera {
 		this.reBianco = new ReBianco(4, 7);
 		this.reNero = new ReNero(4, 0);
 
+		/*
 		//genera i pezzi bianchi
 		this.spawn(new TorreBianco(0, 7));
 		this.spawn(new CavalloBianco(1, 7));
@@ -69,6 +70,7 @@ class Scacchiera {
 			this.spawn(new PedoneBianco(i, 6));
 		}
 
+
 		//genera i pezzi neri
 		this.spawn(new TorreNero(0, 0));
 		this.spawn(new CavalloNero(1, 0));
@@ -81,6 +83,12 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneNero(i, 1));
 		}
+		*/
+
+		this.spawn(new AlfiereNero(2,0))
+		this.spawn(new PedoneBianco(3, 6))
+		this.spawn(this.reBianco);
+		this.spawn(this.reNero);
 
 	}
 
@@ -170,20 +178,24 @@ class Scacchiera {
 			});
 
 			//calcola tutte le mosse dei pezzi neri
-			Scacchiera.pezziNero.forEach(function (value) {
-				let mosse = value.calcolaMossePossibili(Scacchiera);
+			Scacchiera.pezziNero.forEach(function (target) {
+				let mosse = target.calcolaMossePossibili(Scacchiera);
 				mosse.forEach(function (value) {
+					console.log(value[0] + ", " + value[1]);
+
 					//se trova una mossa che cattura il re imposta scacco = true e smette di cercare
-					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) scacco = true;
+					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) {
+						scacco = true;
+					}
 
 					if (Scacchiera.reBianco.arroccoPossibile) {	//se l'arrocco è possibile
 						if (Scacchiera.reBianco.x === 6 && torreDxArrocco) {	//se è stato eseguito l'arrocco a destra
-							if (value[0] === 5 && value[1] === 7) {	//controlla se la casella (5,7) è attaccata
+							if ((value[0] === 5 && value[1] === 7) || (value[0] === 4 && value[1] === 7)) {	//controlla se la casella (5,7) è attaccata
 								scacco = true;
 							}
 						}
 						if (Scacchiera.reBianco.x === 2 && torreSxArrocco) {	//se è stato eseguito l'arrocco a sinistra
-							if (value[0] === 3 && value[1] === 7) { //controlla se la casella (2,7) è attaccata
+							if ((value[0] === 3 && value[1] === 7) || (value[0] === 4 && value[1] === 7)) { //controlla se la casella (2,7) è attaccata
 								scacco = true;
 							}
 						}
@@ -220,12 +232,12 @@ class Scacchiera {
 					//arrocco
 					if (Scacchiera.reNero.arroccoPossibile) { //se l'arrocco è possibile
 						if (Scacchiera.reNero.x === 6 && torreDxArrocco) { //se è stato eseguito l'arrocco a destra
-							if (value[0] === 5 && value[1] === 0) { //controlla se la casella (5,0) è attaccata
+							if ((value[0] === 5 && value[1] === 0) || (value[0] === 4 && value[1] === 0)) { //controlla se la casella (5,0) è attaccata
 								scacco = true;
 							}
 						}
 						if (Scacchiera.reNero.x === 2 && torreSxArrocco) { //se è stato eseguito l'arrocco a destra
-							if (value[0] === 3 && value[1] === 0) { //controlla se la casella (3,0) è attaccata
+							if ((value[0] === 3 && value[1] === 0) || (value[0] === 4 && value[1] === 0)) { //controlla se la casella (3,0) è attaccata
 								scacco = true;
 							}
 						}
@@ -241,7 +253,7 @@ class Scacchiera {
 	controlloStallo () {
 		let Scacchiera = this;
 		let mossaTrovata = false;
-		//let casellaMossa
+		let casellaMossa
 
 		if (Scacchiera.turnoBianco) {
 			Scacchiera.pezziBianco.every(function(target){	//scorre tutti i pezzi del bianco finchè non trova una mossa valida
@@ -265,6 +277,7 @@ class Scacchiera {
 						//ripristina i pezzi
 						target.move(objX, objY);
 						visualizza(target);
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
 						//$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
 
 						return !mossaTrovata;
@@ -284,7 +297,7 @@ class Scacchiera {
 						let objX = target.x;	//salvo la posizione iniziale del pezzo
 						let objY = target.y;
 
-						//casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();	//salva il pezzo presente nella casella in cui si muove
+						casellaMossa = $("td:eq(" + (value[0] + 8 * value[1]) + ")").html();	//salva il pezzo presente nella casella in cui si muove
 
 						//sposta temporaneamente il pezzo e lo visualizza
 						target.move(value[0], value[1]);
@@ -297,7 +310,8 @@ class Scacchiera {
 						//ripristina i pezzi
 						target.move(objX, objY);
 						visualizza(target);
-						//$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
+						//$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");
+						$("td:eq(" + (value[0] + 8 * value[1]) + ")").html(casellaMossa);
 
 						return !mossaTrovata;
 					})
@@ -323,14 +337,21 @@ class Scacchiera {
 				$("body").off("click");
 			})
 		} ,1200);
+	}
 
-		
-	}	
+	staleMate() {
+		$("#stalemate").html("<img src ='immagini/stallo.png'>").slideDown(1200,"swing");
 
+		setTimeout(function(){
+			$("body").click(function(){
+				$("#stalemate").hide();
+				$("body").off("click");
+			})
+		} ,1200);
+	}
 
 	//aggiorna la logica di gioco
 	tick() {
-		
 		let Scacchiera = this;	//puntatore si riferisce sempre alla scacchiera
 		let classe;			//variabile d'appoggio che serve a impostare l'evento click solo sulle immagini del giocatore giusto
 
@@ -437,19 +458,19 @@ class Scacchiera {
 								let pezzo = this.src.split("/")[this.src.split("/").length-1][6];	//capisce quale pezzo è stato scelto dal percorso dell'immagine cliccata
 								switch (pezzo) {
 									case 'b': {
-										obj = new AlfiereBianco(objX, 0);
+										obj = new AlfiereBianco(value[0], 0);
 										break;
 									}
 									case 'k': {
-										obj = new CavalloBianco(objX, 0);
+										obj = new CavalloBianco(value[0], 0);
 										break;
 									}
 									case 'q': {
-										obj = new ReginaBianco(objX, 0);
+										obj = new ReginaBianco(value[0], 0);
 										break;
 									}
 									case 'r': {
-										obj = new TorreBianco(objX, 0);
+										obj = new TorreBianco(value[0], 0);
 										break;
 									}
 								}
@@ -464,8 +485,8 @@ class Scacchiera {
 								Scacchiera.stallo = Scacchiera.controlloStallo();
 
 								if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
-									if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
-									else console.log("Stallo");
+									if (Scacchiera.scacco) Scacchiera.scaccoMatto();		//scacco + stallo = scacco matto
+									else Scacchiera.staleMate();
 								}
 
 								Scacchiera.tick();	//riesegue la funzione tick per far ripartire il gioco
@@ -489,19 +510,19 @@ class Scacchiera {
 								let pezzo = this.src.split("/")[this.src.split("/").length-1][6];	//capisce quale pezzo è stato scelto dal percorso dell'immagine cliccata
 								switch (pezzo) {
 									case 'b': {
-										obj = new AlfiereNero(objX, 7);
+										obj = new AlfiereNero(value[0], 7);
 										break;
 									}
 									case 'k': {
-										obj = new CavalloNero(objX, 7);
+										obj = new CavalloNero(value[0], 7);
 										break;
 									}
 									case 'q': {
-										obj = new ReginaNero(objX, 7);
+										obj = new ReginaNero(value[0], 7);
 										break;
 									}
 									case 'r': {
-										obj = new TorreNero(objX, 7);
+										obj = new TorreNero(value[0], 7);
 										break;
 									}
 								}
@@ -517,10 +538,9 @@ class Scacchiera {
 								Scacchiera.stallo = Scacchiera.controlloStallo();
 
 								if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
-									if (Scacchiera.scacco) console.log("Scacco matto");		//scacco + stallo = scacco matto
-									else console.log("Stallo");
+									if (Scacchiera.scacco) Scacchiera.scaccoMatto();		//scacco + stallo = scacco matto
+									else Scacchiera.staleMate();
 								}
-
 
 								Scacchiera.tick();	//riesegue la funzione tick per far ripartire il gioco
 							})
@@ -593,7 +613,7 @@ class Scacchiera {
 
 						if (Scacchiera.stallo) {									//reazione a scacco matto e stallo
 							if (Scacchiera.scacco) Scacchiera.scaccoMatto();		//scacco + stallo = scacco matto
-							else console.log("Stallo");
+							else Scacchiera.staleMate();
 						}
 					});
 				}
