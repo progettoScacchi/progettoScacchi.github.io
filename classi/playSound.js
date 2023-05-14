@@ -5,6 +5,8 @@
  * $.stopSound();
 **/
 
+//questa funzione si integra con la pagina quando viene utilizzata, serve per velocizzare appunto l'utilizzo di suoni
+
 (function ($) {
     $.extend({
         playSound: function () {
