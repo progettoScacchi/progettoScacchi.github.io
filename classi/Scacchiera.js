@@ -56,7 +56,7 @@ class Scacchiera {
 		this.reBianco = new ReBianco(4, 7);
 		this.reNero = new ReNero(4, 0);
 
-		/*
+
 		//genera i pezzi bianchi
 		this.spawn(new TorreBianco(0, 7));
 		this.spawn(new CavalloBianco(1, 7));
@@ -83,13 +83,6 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneNero(i, 1));
 		}
-		*/
-
-		this.spawn(new AlfiereNero(2,0))
-		this.spawn(new PedoneBianco(3, 6))
-		this.spawn(this.reBianco);
-		this.spawn(this.reNero);
-
 	}
 
 	//restituisce un pezzo bianco date le coordinate
@@ -178,10 +171,10 @@ class Scacchiera {
 			});
 
 			//calcola tutte le mosse dei pezzi neri
-			Scacchiera.pezziNero.forEach(function (target) {
+			Scacchiera.pezziNero.every(function (target) {
 				let mosse = target.calcolaMossePossibili(Scacchiera);
-				mosse.forEach(function (value) {
-					console.log(value[0] + ", " + value[1]);
+
+				mosse.every(function (value) {
 
 					//se trova una mossa che cattura il re imposta scacco = true e smette di cercare
 					if (value[0] === Scacchiera.reBianco.x && value[1] === Scacchiera.reBianco.y) {
@@ -200,7 +193,9 @@ class Scacchiera {
 							}
 						}
 					}
-				})
+					return !scacco;
+				});
+				return !scacco;
 			});
 		}
 
@@ -224,9 +219,9 @@ class Scacchiera {
 				}
 			});
 
-			Scacchiera.pezziBianco.forEach(function (target) {
+			Scacchiera.pezziBianco.every(function (target) {
 				let mosse = target.calcolaMossePossibili(Scacchiera);
-				mosse.forEach(function (value) {
+				mosse.every(function (value) {
 					if (value[0] === Scacchiera.reNero.x && value[1] === Scacchiera.reNero.y) scacco = true;
 
 					//arrocco
@@ -242,7 +237,9 @@ class Scacchiera {
 							}
 						}
 					}
+					return !scacco;
 				})
+				return !scacco;
 			});
 		}
 		if (pezzoCatturato) Scacchiera.spawn(pezzoCatturato);//se ha eliminato un pezzo precedentemente lo ricrea
@@ -254,6 +251,8 @@ class Scacchiera {
 		let Scacchiera = this;
 		let mossaTrovata = false;
 		let casellaMossa
+
+		if (Scacchiera.pezziBianco.length === 1 && Scacchiera.pezziNero.length === 1) return true;
 
 		if (Scacchiera.turnoBianco) {
 			Scacchiera.pezziBianco.every(function(target){	//scorre tutti i pezzi del bianco finchè non trova una mossa valida
@@ -406,6 +405,7 @@ class Scacchiera {
 				else {
 					obj.move(objX, objY);	//lo sposta di nuovo nella posizione originale
 					visualizza(obj);	//lo visualizza nella posizione originale
+					$("td:eq(" + (value[0] + 8 * value[1]) + ")").html("");	//svuota la casella della mossa
 
 					//per lo stile: aggiunge una classe diversa se la mossa è una cattura o un movimento
 					if (Scacchiera.getPezzoNero(value[0], value[1]) || Scacchiera.getPezzoBianco(value[0], value[1])) $("td:eq(" + (value[0] + 8 * value[1]) + ")").addClass("mangia");
