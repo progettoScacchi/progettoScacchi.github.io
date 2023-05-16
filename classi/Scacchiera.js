@@ -53,6 +53,8 @@ class Scacchiera {
 	}
 
 	generaIniziale() {							//genera la disposizione iniziale
+
+		/*
 		this.reBianco = new ReBianco(4, 7);
 		this.reNero = new ReNero(4, 0);
 
@@ -83,6 +85,15 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneNero(i, 1));
 		}
+
+		 */
+
+		this.reBianco = new ReBianco(4, 7);
+		this.reNero = new ReNero(0, 0);
+		this.spawn(this.reBianco);
+		this.spawn(this.reNero);
+		this.spawn(new ReginaBianco(7, 1))
+		this.spawn(new ReginaBianco(6, 2))
 	}
 
 	//restituisce un pezzo bianco date le coordinate
@@ -248,7 +259,6 @@ class Scacchiera {
 	}
 
 	controlloStallo () {
-		console.clear();
 		let Scacchiera = this;
 		let mossaTrovata = false;
 		let casellaMossa
@@ -323,25 +333,25 @@ class Scacchiera {
 
 
 	scaccoMatto() {                  //gestione della schermata di vittoria
-		if(this.turnoBianco) $("#victory").html("<img src ='immagini/vnero.png'>");      //invertiti perchè è cambiato il turno
-		else if (this.turnoNero) $("#victory").html("<img src ='immagini/vbianco.png'>");
+		if(this.turnoBianco) $("#result").html("<img src ='immagini/vnero.png'>");      //invertiti perchè è cambiato il turno
+		else if (this.turnoNero) $("#result").html("<img src ='immagini/vbianco.png'>");
 		
-		$("#victory").slideDown(1200,"swing");
+		$("#result").slideDown(1200,"swing");
 
 		setTimeout(function(){
 			$("body").click(function(){	
-				$("#victory").hide();
+				$("#result").hide();
 				$("body").off("click");
 			})
 		} ,1200);
 	}
 
 	staleMate() {
-		$("#stalemate").html("<img src ='immagini/stallo.png'>").slideDown(1200,"swing");
+		$("#result").html("<img src ='immagini/stallo.png'>").slideDown(1200,"swing");
 
 		setTimeout(function(){
 			$("body").click(function(){
-				$("#stalemate").hide();
+				$("#result").hide();
 				$("body").off("click");
 			})
 		} ,1200);
@@ -613,8 +623,6 @@ class Scacchiera {
 								if (value instanceof PedoneNero) value.enPassantPossibile = false;
 							})
 						}
-
-
 					});
 				}
 			});

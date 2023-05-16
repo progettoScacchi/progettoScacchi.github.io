@@ -65,7 +65,7 @@ body {
 }
 
 
-.game, #victory {
+.game, #result {
 	position: absolute;
 	size: 700px;
 	top: 0;
@@ -74,7 +74,7 @@ body {
 	margin: 0 auto;
 }
 
-#victory {
+#result {
 	display: none;
 	background-color: rgba(0, 0, 0, 0.456);
 	backdrop-filter: blur(5px);
@@ -83,7 +83,7 @@ body {
 	z-index: 1;
 }
 
-#victory img{
+#result img{
 	margin-top: 90px;
 	width: 700px;
 	height: 700px;
