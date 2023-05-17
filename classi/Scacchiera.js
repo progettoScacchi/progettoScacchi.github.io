@@ -53,8 +53,6 @@ class Scacchiera {
 	}
 
 	generaIniziale() {							//genera la disposizione iniziale
-
-		/*
 		this.reBianco = new ReBianco(4, 7);
 		this.reNero = new ReNero(4, 0);
 
@@ -85,15 +83,6 @@ class Scacchiera {
 		for (let i = 0; i < 8; i++) {
 			this.spawn(new PedoneNero(i, 1));
 		}
-
-		 */
-
-		this.reBianco = new ReBianco(4, 7);
-		this.reNero = new ReNero(0, 0);
-		this.spawn(this.reBianco);
-		this.spawn(this.reNero);
-		this.spawn(new ReginaBianco(7, 1))
-		this.spawn(new ReginaBianco(6, 2))
 	}
 
 	//restituisce un pezzo bianco date le coordinate
